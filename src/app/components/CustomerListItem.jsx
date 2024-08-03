@@ -27,38 +27,39 @@ const CustomerListItem = ({ customer, onEdit, onDelete }) => {
         },
       }}
     >
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" flex={1}>
-        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-          <ListItemAvatar>
-            <Avatar>{customer.customerName[0]}</Avatar>
-          </ListItemAvatar>
-          <Box sx={{ ml: 2 }}>
-            <Typography variant="h6">{customer.customerName}</Typography>
-            <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
-              <MailIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-              {customer.email}
-            </Typography>
-            <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
-              <PhoneIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-              {customer.phoneNumber}
-            </Typography>
-          </Box>
-        </Box>
-        {/* <Box sx={{ flex: 1 }}>
-          <Typography variant="body2" color="text.primary">
-            <PaymentIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-            {customer.paymentInfo.paymentMethod}
+      <Stack direction="row" spacing={2} alignItems="center" flex={1}>
+        <ListItemAvatar>
+          <Avatar>{customer.customerName[0]}</Avatar>
+        </ListItemAvatar>
+        <Box sx={{ ml: 2, flex: 1 }}>
+          <Typography variant="h6">{customer.customerName}</Typography>
+          <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
+            <MailIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
+            {customer.email}
           </Typography>
-          <Typography>Due Amount: {customer.paymentInfo.dueAmount} RS</Typography>
+          <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
+            <PhoneIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
+            {customer.phoneNumber}
+          </Typography>
         </Box>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="body2">Date of Travel: {customer.ticketInfo.dateOfTraveling}</Typography>
-          <Typography variant="body2">Date of Issue: {customer.ticketInfo.dateOfIssue}</Typography>
-        </Box> */}
-
-        <CustomerDetails customer={ customer} />
       </Stack>
-      <Stack direction="row" spacing={1} sx={{ mt: { xs: 2, sm: 0 }, ml: 'auto' }}>
+
+      {/* Customer Details Section */}
+      <CustomerDetails customer={customer} />
+
+      {/* Action Buttons */}
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          mt: { xs: 2, sm: 0 }, // Margin top for mobile devices
+          ml: 'auto', // Align to the right
+          [theme.breakpoints.down('sm')]: {
+            justifyContent: 'center', // Center the buttons on mobile
+            mt: 2,
+          },
+        }}
+      >
         <IconButton
           edge="end"
           aria-label="edit"
