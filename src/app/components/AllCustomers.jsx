@@ -1,28 +1,26 @@
 import React from 'react';
 import { useAppContext } from '../context/AppContext';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
 import MailIcon from '@mui/icons-material/Mail';
 import PhoneIcon from '@mui/icons-material/Phone';
 import PaymentIcon from '@mui/icons-material/Payment';
+import { Box, Avatar, Typography, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 
-function AllUsers() {
+function AllCustomers() {
   const { userData } = useAppContext();
 
   return (
-    <Box sx={{ width: '100%',  bgcolor: 'background.paper', p: 2, m: 'auto' }}  gutterBottom>
-      <Typography variant="h4" component="h1" >
-        All Users
+    <Box sx={{ width: '100%', height: '100%', bgcolor: 'background.paper', border: '2px solid black' }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        All Customers
       </Typography>
       {userData ? (
-        <List width = '100%' height = '100%' >
+        <List sx ={{
+          width: '100%',
+          height: '100%',
+          padding: '5px'
+        }}>
           {userData.map((user, index) => (
-            <ListItem key={index} alignItems="flex-start" flexDirection = 'column'>
+            <ListItem key={index} alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar>{user.customerName[0]}</Avatar>
               </ListItemAvatar>
@@ -31,11 +29,11 @@ function AllUsers() {
                 secondary={
                   <>
                     <Typography variant="body2" color="text.primary">
-                      <MailIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
+                      <MailIcon sx={{ verticalAlign: 'middle', mr: '5px' }} />
                       {user.email}
                     </Typography>
                     <Typography variant="body2" color="text.primary">
-                      <PhoneIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
+                      <PhoneIcon sx={{ verticalAlign: 'middle', mr: '5px' }} />
                       {user.phoneNumber}
                     </Typography>
                     <Typography variant="body2" color="text.primary">
@@ -55,4 +53,4 @@ function AllUsers() {
   );
 }
 
-export default AllUsers;
+export default AllCustomers;
