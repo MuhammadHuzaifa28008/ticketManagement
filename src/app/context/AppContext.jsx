@@ -11,7 +11,7 @@ export function useAppContext() {
 
 // Context provider component
 export function AppContextProvider({ children }) {
-  const [userData, setUserData] = useState([]);
+  const [allCustomers, setAllCustomers] = useState([]);
   const [serverConn, setServerConn] = useState(true);
 
   useEffect(() => {
@@ -19,10 +19,10 @@ export function AppContextProvider({ children }) {
       try {
         // Remove duplicate entries from the users array based on a unique property, e.g., transactionID
         const uniqueUsers = users.filter((user, index, self) =>
-          index === self.findIndex((u) => u.transactionID === user.transactionID)
+          index === self.findIndex((u) => u.customerName === user.customerName)
         );
         
-        setUserData(uniqueUsers);
+        setAllCustomers(uniqueUsers);
       } catch (error) {
         console.error('Error loading app data:', error);
         setServerConn(false);
@@ -33,13 +33,13 @@ export function AppContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (userData.length > 0) {
-      console.log('User data updated:', userData);
+    if (allCustomers.length > 0) {
+      console.log('User data updated:', allCustomers);
     }
-  }, [userData]);
+  }, [allCustomers]);
 
   return (
-    <AppContext.Provider value={{ userData, serverConn }}>
+    <AppContext.Provider value={{ allCustomers, serverConn }}>
       {children}
     </AppContext.Provider>
   );
