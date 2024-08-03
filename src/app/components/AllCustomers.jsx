@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import useDynamicFilter from '../hooks/useDynamicFilter';
 import CustomerList from './CustomerList';
 import CustomerSkeleton from './CustomerSkeleton';
@@ -14,33 +15,37 @@ function AllCustomers() {
 
   // Update filtered customers when query or allCustomers change
   useEffect(() => {
-    if (query === '') {
-      setCustomers(allCustomers);
-    } else {
-      if (filteredCustomers) setCustomers(filteredCustomers);
-    }
+    setCustomers(query === '' ? allCustomers : filteredCustomers);
   }, [query, filteredCustomers, allCustomers]);
 
-  // Ensure initial load sets all customers
-  useEffect(() => {
-    setCustomers(allCustomers);
-  }, [allCustomers]);
-
   return (
-    <Box sx={{ 
-      width: '100%',
-       display:'flex',
-        flexDirection:'column',
-         justifyContent:'center',
-          alignItems:'center'
-           }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '800px',
+        mx: 'auto',
+        mt: 4,
+        px: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <TextField
-        id="outlined-basic"
-        label=" Name or PNR#"
+        id="customer-search"
+        label="Search by Name or PNR#"
         variant="outlined"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        sx={{ marginBottom: '16px'}}
+        sx={{ marginBottom: 2, width: '100%' }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        autoFocus
       />
 
       {customers.length > 0 ? (
@@ -49,9 +54,9 @@ function AllCustomers() {
         <NoResults />
       ) : (
         <>
-        <CustomerSkeleton />
-        <CustomerSkeleton />
-        <CustomerSkeleton />
+          <CustomerSkeleton />
+          <CustomerSkeleton />
+          <CustomerSkeleton />
         </>
       )}
     </Box>
