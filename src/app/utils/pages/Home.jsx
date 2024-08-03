@@ -11,11 +11,7 @@ export default function Home() {
 
 
   return (
-    <Box display = 'flex' flexDirection= 'column' alignItems='center' padding= '10px' width= '100%' height = "100%" 
-    sx  = {{
-      border: '5px solid red'
-    }}
-    >
+    <Box display = 'flex' flexDirection= 'column' alignItems='center' padding= '10px' width= '100%' height = "100%"    >
       {/* <TestFilterHook /> */}
       <AllCustomers />
     </Box>

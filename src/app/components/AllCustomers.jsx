@@ -27,14 +27,20 @@ function AllCustomers() {
   }, [allCustomers]);
 
   return (
-    <Box sx={{ width: '100%', height: '100%', bgcolor: 'background.paper', border: '2px solid black' }}>
+    <Box sx={{ 
+      width: '100%',
+       display:'flex',
+        flexDirection:'column',
+         justifyContent:'center',
+          alignItems:'center'
+           }}>
       <TextField
         id="outlined-basic"
-        label="Name or PNR#"
+        label=" Name or PNR#"
         variant="outlined"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        sx={{ marginBottom: '16px' }}
+        sx={{ marginBottom: '16px'}}
       />
 
       {customers.length > 0 ? (
@@ -42,7 +48,11 @@ function AllCustomers() {
       ) : query ? (
         <NoResults />
       ) : (
+        <>
         <CustomerSkeleton />
+        <CustomerSkeleton />
+        <CustomerSkeleton />
+        </>
       )}
     </Box>
   );

@@ -6,7 +6,7 @@ const CustomerSkeleton = () => (
     <Skeleton height={100} />
     <Skeleton animation="wave" height={100} />
     <Skeleton animation={false} height={100} />
-    <Skeleton variant="rounded" mb="5px" height={100} />
+    <Skeleton variant="rounded" mb="5rem" height={100} />
   </Box>
 );
 
