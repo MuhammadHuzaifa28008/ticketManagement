@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 // import AssignmentSolver from '../../microServices/AssignmentSolver/AssignmentSolver.jsx';
-import Home from '../pages/Home';
+import Home from '../utils/pages/Home';
 
 
 function MainRoutes() {
