@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../../context/AppContext';
 import { Box, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import useDynamicFilter from '../hooks/useDynamicFilter';
+import useDynamicFilter from '../../hooks/useDynamicFilter';
 import CustomerList from './CustomerList';
 import CustomerSkeleton from './CustomerSkeleton';
-import NoResults from './NoResults';
+import NoResults from '../NoResults';
 
 function AllCustomers() {
   const { allCustomers } = useAppContext();
@@ -37,7 +37,7 @@ function AllCustomers() {
         variant="outlined"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        sx={{ marginBottom: 2, width: '100%' }}
+        sx={{ marginBottom: 2, }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

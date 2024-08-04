@@ -1,18 +1,20 @@
 import React from 'react';
-import { ListItemButton, Stack, ListItemAvatar, Avatar, Typography, Box, IconButton } from '@mui/material';
+import { ListItem, useMediaQuery, Stack, ListItemAvatar, Avatar, Typography, Box, IconButton } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import PhoneIcon from '@mui/icons-material/Phone';
-import PaymentIcon from '@mui/icons-material/Payment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomerDetails from './CustomerDetails';
 import { useTheme } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
-const CustomerListItem = ({ customer, onEdit, onDelete }) => {
+const CustomerListItem = ({ customer, onDelete }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <ListItemButton
+    <ListItem
       sx={{
         backgroundColor: theme.palette.background.paper,
         marginBottom: theme.spacing(2),
@@ -21,23 +23,29 @@ const CustomerListItem = ({ customer, onEdit, onDelete }) => {
         padding: theme.spacing(2),
         borderRadius: theme.shape.borderRadius,
         display: 'flex',
-        flexDirection: 'column',
-        [theme.breakpoints.up('sm')]: {
-          flexDirection: 'row',
-        },
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'center' : 'flex-start', // Center on mobile, align left otherwise
+        // alignItems: 'flex-start', // Center on mobile, align left otherwise
       }}
     >
-      <Stack direction="row" spacing={2} alignItems="center" flex={1}>
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        sx={{ width: '100%', mb: isMobile ? 2 : 0 }}
+      >
         <ListItemAvatar>
           <Avatar>{customer.customerName[0]}</Avatar>
         </ListItemAvatar>
         <Box sx={{ ml: 2, flex: 1 }}>
-          <Typography variant="h6">{customer.customerName}</Typography>
-          <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
-            <MailIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-            {customer.email}
+          <Typography variant="h6" noWrap>
+            {customer.customerName}
           </Typography>
-          <Typography variant="body2" color="text.primary" display="flex" alignItems="center">
+          <Typography variant="body2" color="text.primary" display="flex" alignItems="center" noWrap>
+            <ConfirmationNumberIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
+            {customer.ticketInfo.PNRNo}
+          </Typography>
+          <Typography variant="body2" color="text.primary" display="flex" alignItems="center" noWrap>
             <PhoneIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
             {customer.phoneNumber}
           </Typography>
@@ -45,34 +53,34 @@ const CustomerListItem = ({ customer, onEdit, onDelete }) => {
       </Stack>
 
       {/* Customer Details Section */}
-      <CustomerDetails customer={customer} />
+      <CustomerDetails customer={customer} sx={{ width: '100%', mb: isMobile ? 2 : 0 }} />
 
       {/* Action Buttons */}
       <Stack
         direction="row"
         spacing={1}
         sx={{
-          mt: { xs: 2, sm: 0 }, // Margin top for mobile devices
-          ml: 'auto', // Align to the right
-          [theme.breakpoints.down('sm')]: {
-            justifyContent: 'center', // Center the buttons on mobile
-            mt: 2,
-          },
+          mt: isMobile ? 2 : 0,
+          ml: isMobile ? 0 : 'auto',
+          justifyContent: 'flex-end',
+          width: isMobile ? '100%' : 'auto',
         }}
       >
+        <Link to= '/add-or-edit-customer-data' state = { customer } >
         <IconButton
           edge="end"
           aria-label="edit"
-          onClick={onEdit}
+          // onClick={onEdit}
           sx={{
             color: theme.palette.text.primary,
             '&:hover': {
               backgroundColor: theme.palette.action.hover,
             },
           }}
-        >
+          >
           <EditIcon />
         </IconButton>
+          </Link>
         <IconButton
           edge="end"
           aria-label="delete"
@@ -87,7 +95,7 @@ const CustomerListItem = ({ customer, onEdit, onDelete }) => {
           <DeleteIcon />
         </IconButton>
       </Stack>
-    </ListItemButton>
+    </ListItem>
   );
 };
 
