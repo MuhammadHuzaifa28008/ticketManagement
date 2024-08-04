@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Typography, Paper, useTheme } from '@mui/material';
 import { DatePicker } from '@mui/lab';
 import { useLocation } from 'react-router-dom';
+import CustomerInfo from './CustomerForm/CustomerInfo';
+import TicketInfo from './CustomerForm/TicketInfo'
+import PaymentInfo from './CustomerForm/PaymentInfo';
 
 export default function AddOrEditCustomer() {
   const location = useLocation();
@@ -92,121 +95,32 @@ export default function AddOrEditCustomer() {
   };
 
   const handleSubmit = () => {
-    // Add logic to handle form submission
     console.log(formData);
   };
 
   return (
-    <Paper style={{ padding: theme.spacing(3) }}>
-      <Typography variant="h5" gutterBottom>
+    <Paper sx={{ padding: theme.spacing(3) }}>
+      <Typography variant="h1" gutterBottom>
         {customer.customerName ? 'Edit Customer' : 'Add Customer'}
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="Customer Name"
-            name="customerName"
-            fullWidth
-            value={formData.customerName}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Email"
-            name="email"
-            fullWidth
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="Phone Number"
-            name="phoneNumber"
-            fullWidth
-            value={formData.phoneNumber}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <DatePicker
-            label="Date of Birth"
-            value={formData.dob}
-            onChange={(date) => handleDateChange('dob', date)}
-            renderInput={(params) => <TextField {...params} fullWidth required />}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="PNR No"
-            name="ticketInfo.PNRNo"
-            fullWidth
-            value={formData.ticketInfo.PNRNo}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <DatePicker
-            label="Date of Traveling"
-            value={formData.ticketInfo.dateOfTraveling}
-            onChange={(date) => handleDateChange('ticketInfo.dateOfTraveling', date)}
-            renderInput={(params) => <TextField {...params} fullWidth required />}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <DatePicker
-            label="Date of Issue"
-            value={formData.ticketInfo.dateOfIssue}
-            onChange={(date) => handleDateChange('ticketInfo.dateOfIssue', date)}
-            renderInput={(params) => <TextField {...params} fullWidth required />}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="Ticket Price"
-            name="paymentInfo.ticketPrice"
-            type="number"
-            fullWidth
-            value={formData.paymentInfo.ticketPrice}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="Profit"
-            name="paymentInfo.profit"
-            type="number"
-            fullWidth
-            value={formData.paymentInfo.profit}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            label="Amount Paid"
-            name="paymentInfo.amountPaid"
-            type="number"
-            fullWidth
-            value={formData.paymentInfo.amountPaid}
-            onChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-          >
-            Save
-          </Button>
-        </Grid>
+      <CustomerInfo
+        formData={formData}
+        handleInputChange={handleInputChange}
+        handleDateChange={handleDateChange}
+      />
+      <TicketInfo
+        formData={formData}
+        handleInputChange={handleInputChange}
+        handleDateChange={handleDateChange}
+      />
+      <PaymentInfo
+        formData={formData}
+        handleInputChange={handleInputChange}
+      />
+      <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          Save
+        </Button>
       </Grid>
     </Paper>
   );
