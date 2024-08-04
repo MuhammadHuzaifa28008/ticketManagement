@@ -1,42 +1,71 @@
-import customerData from "../../assets/dummy.json"
+import { useState } from 'react';
+import customerData from '../../assets/dummy.json' with {type:'json'};
+import fs from 'fs'; // This is typically used in Node.js environments
+import path from 'path'
+const useCustomerData = () => {
+    const [customers, setCustomers] = useState(customerData);
+    const saveToFile = (data) => {
+        try {
+            // const __dirname = "./src/assets/";
+            const __dirname = "../../assets/";
+          const filePath = path.resolve(__dirname, 'dummy.json');
+          fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+        } catch (error) {
+          console.error('Error writing to file:', error);
+        }
+      };
+    
 
-//  array of json
-        // [
-        //     {
-        //       "customerName": "Alice Johnson",
-        //       "email": "alice.j@example.com",
-        //       "phoneNumber": "987-654-3210",
-        //       "dob": "1990-02-15",
-        //       "ticketInfo": {
-        //         "PNRNo": "PNR987654",
-        //         "dateOfTraveling": "2024-08-16",
-        //         "dateOfIssue": "2024-08-01"
-        //       },
-        //       "paymentInfo": {
-        //         "ticketPrice": 75,
-        //         "profit": 25,
-        //         "invoiceAmount": 400,
-        //         "paymentStatus": "complete",
-        //         "paymentMethod": "Credit Card",
-        //         "amountPaid": 400,
-        //         "dueAmount": 0
-        //       }
-        //     },
-        // //  so much more entries
-        // ]``
+  const createCustomer = (newCustomer) => {
+    setCustomers((prevCustomers) => {
+      const updatedCustomers = [...prevCustomers, newCustomer];
+      saveToFile(updatedCustomers);
+      return updatedCustomers;
+    });
+  };
+
+  const updateCustomer = (updatedCustomer) => {
+    setCustomers((prevCustomers) => {
+      const updatedCustomers = prevCustomers.map((customer) =>
+        customer.customerName === updatedCustomer.customerName ? updatedCustomer : customer
+      );
+      saveToFile(updatedCustomers);
+      return updatedCustomers;
+    });
+  };
+
+  const deleteCustomer = (customerName) => {
+    setCustomers((prevCustomers) => {
+      const updatedCustomers = prevCustomers.filter(
+        (customer) => customer.customerName !== customerName
+      );
+      saveToFile(updatedCustomers);
+      return updatedCustomers;
+    });
+  };
+
+  const updatePaymentInfo = (customerName, newPaymentInfo) => {
+    setCustomers((prevCustomers) => {
+      const updatedCustomers = prevCustomers.map((customer) =>
+        customer.customerName === customerName
+          ? { ...customer, paymentInfo: newPaymentInfo }
+          : customer
+      );
+      saveToFile(updatedCustomers);
+      return updatedCustomers;
+    });
+  };
+
+  return {
+    customers,
+    createCustomer,
+    updateCustomer,
+    deleteCustomer,
+    updatePaymentInfo,
+  };
+};
 
 
+// saveToFile('data')
 
-
-----
-
-// write following funtions 
-//  -> create new customer that adds new entry in array and updates the file
-// -> takes a entry and updates it in array find entry by name and updates first found entry in system
-// -> functions will take parameters which are complete entry and will hold complete customer entry
-// -> delete function will only hold name and delete first entry with name from array 
-// -> function that will update paymentInformation 
-// -> update file after each function ofcource  
-
-
-// this file is a hook that will be used to set a universal context when array updates and returns values for respective function usage if respective component is not using context
+export default useCustomerData;
