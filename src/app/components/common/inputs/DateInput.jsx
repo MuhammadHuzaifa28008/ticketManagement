@@ -1,8 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Typography } from '@mui/material';
 
-const DateInput = ({ title, value, onChange, required}) => {
+const DateInput = ({ title, value, onChange, required }) => {
   const [inputValue, setInputValue] = useState(value || '');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    // if (required && !inputValue) {
+    //   setError(`${title} is required.`);
+    // } else {
+    //   setError('');
+    // }
+  }, [inputValue, required]);
+
+  const validateDate = (date) => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const maxYear = currentYear + 1; // One year from the current year
+    const minYear = currentYear - 1; // One year before the current year
+
+    const dateParts = date.split('-');
+    if (dateParts.length === 3) {
+      const year = parseInt(dateParts[0], 10);
+      const month = parseInt(dateParts[1], 10);
+      const day = parseInt(dateParts[2], 10);
+
+      // Check year range
+      if (year < minYear || year > maxYear) {
+        setError('Year must be within one year of the current year.');
+        return false;
+      }
+
+      // Check month range
+      if (month < 1 || month > 12) {
+        setError('Month must be between 01 and 12.');
+        return false;
+      }
+
+      // Check day range
+      const daysInMonth = new Date(year, month, 0).getDate();
+      if (day < 1 || day > daysInMonth) {
+        setError('Day must be valid for the given month and year.');
+        return false;
+      }
+
+      setError('');
+      return true;
+    }
+    return false;
+  };
 
   const handleInputChange = (event) => {
     let date = event.target.value;
@@ -18,23 +64,29 @@ const DateInput = ({ title, value, onChange, required}) => {
     }
 
     setInputValue(date);
-    onChange(date); // Pass the formatted date back to the parent
+
+    // Validate the formatted date
+    if (validateDate(date) || !required) {
+      onChange(date); // Pass the formatted date back to the parent
+    }
   };
 
   return (
     <Grid item xs={12} mb={2}>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="body1" gutterBottom>
         {title}
       </Typography>
       <TextField
         fullWidth
-        required
+        required={required}
         placeholder="yyyy-mm-dd"
         value={inputValue}
         onChange={handleInputChange}
         inputProps={{
           maxLength: 10, // Limit input length to "yyyy-mm-dd"
         }}
+        error={!!error}
+        helperText={error}
       />
     </Grid>
   );

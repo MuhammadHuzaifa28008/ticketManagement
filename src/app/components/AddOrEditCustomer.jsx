@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Typography, Paper, useTheme } from '@mui/material';
-import { DatePicker } from '@mui/lab';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CustomerInfo from './CustomerForm/CustomerInfo';
-import TicketInfo from './CustomerForm/TicketInfo'
+import TicketInfo from './CustomerForm/TicketInfo';
 import PaymentInfo from './CustomerForm/PaymentInfo';
 
 export default function AddOrEditCustomer() {
   const location = useLocation();
+  const navigate = useNavigate();
   const customer = location.state || {};
   const theme = useTheme();
 
@@ -31,6 +31,8 @@ export default function AddOrEditCustomer() {
       dueAmount: customer.paymentInfo?.dueAmount || 0,
     }
   });
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (customer) {
@@ -56,6 +58,16 @@ export default function AddOrEditCustomer() {
       });
     }
   }, [customer]);
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.customerName) newErrors.customerName = 'Customer Name is required';
+    if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
+    if (!formData.dob) newErrors.dob = 'Date of Birth is required';
+    // Add more validation as needed
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -95,11 +107,18 @@ export default function AddOrEditCustomer() {
   };
 
   const handleSubmit = () => {
-    console.log(formData);
+    if (validate()) {
+      console.log(formData);
+      // Handle form submission
+    }
+  };
+
+  const handleCancel = () => {
+    navigate(-1); // Navigate back to the previous screen
   };
 
   return (
-    <Paper sx={{ padding: theme.spacing(3) }}>
+    <Paper sx={{maxWidth:'100%', boxSizing:'border-box', padding: theme.spacing(3) }}>
       <Typography variant="h1" gutterBottom>
         {customer.customerName ? 'Edit Customer' : 'Add Customer'}
       </Typography>
@@ -107,19 +126,25 @@ export default function AddOrEditCustomer() {
         formData={formData}
         handleInputChange={handleInputChange}
         handleDateChange={handleDateChange}
+        errors={errors}
       />
       <TicketInfo
         formData={formData}
         handleInputChange={handleInputChange}
         handleDateChange={handleDateChange}
+        errors={errors}
       />
       <PaymentInfo
         formData={formData}
         handleInputChange={handleInputChange}
+        errors={errors}
       />
       <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           Save
+        </Button>
+        <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+          Cancel
         </Button>
       </Grid>
     </Paper>

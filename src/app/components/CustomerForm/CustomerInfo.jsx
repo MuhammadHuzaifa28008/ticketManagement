@@ -1,12 +1,11 @@
 import { Grid, Typography, TextField } from '@mui/material';
-import DateInput from '../common/inputs/DateInput'
+import DateInput from '../common/inputs/DateInput';
 
-function CustomerInfo({ formData, handleInputChange, handleDateChange }) {
-
+function CustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
   return (
     <Grid container spacing={2} mt={2}>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 1, md: 1 }}>
-        <Typography>Customer  information</Typography>
+        <Typography variant = {'h4'}>Customer Information</Typography>
       </Grid>
       <Grid item xs={12} sm={6} order={{ xs: 2, md: 2 }}>
         <TextField
@@ -16,6 +15,8 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange }) {
           fullWidth
           value={formData.customerName}
           onChange={handleInputChange}
+          error={!!errors.customerName}
+          helperText={errors.customerName}
           sx={{ mb: 2 }}
         />
       </Grid>
@@ -37,26 +38,22 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange }) {
           fullWidth
           value={formData.phoneNumber}
           onChange={handleInputChange}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber}
           sx={{ mb: 2 }}
         />
       </Grid>
       <Grid item xs={12} sm={6} order={{ xs: 5, md: 5 }}>
-
-
-
         <DateInput
           title="Date of Birth"
           value={formData.dob}
           required={true}
           onChange={(date) => handleDateChange('dob', date)}
-          sx={{mb:'2em'}}
+          sx={{ mb: '2em' }}
         />
-
-
       </Grid>
     </Grid>
   );
 }
 
-
-export default CustomerInfo
+export default CustomerInfo;

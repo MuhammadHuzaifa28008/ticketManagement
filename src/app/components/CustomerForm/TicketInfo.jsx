@@ -5,7 +5,7 @@ function TicketInfo({ formData, handleInputChange, handleDateChange }) {
   return (
     <Grid container spacing={2} mt={5}>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 1, md: 1 }}>
-        <Typography>Flight information</Typography>
+        <Typography variant='h4'>Flight information</Typography>
       </Grid>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 1, md: 1 }}>
         <TextField
