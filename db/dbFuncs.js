@@ -23,8 +23,42 @@ const findCustomerById = async (id) => {
 
 // Helper function to update customer data by ID
 const updateCustomerById = async (id, updateData) => {
-  return await Customer.findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true });
-};
+    // Create an object to store the update paths
+    let updatePaths = {};
+  
+    // Update ticketInfo fields if they are provided
+    if (updateData.ticketInfo) {
+      Object.keys(updateData.ticketInfo).forEach(key => {
+        updatePaths[`ticketInfo.${key}`] = updateData.ticketInfo[key];
+      });
+    }
+  
+    // Update paymentInfo fields if they are provided
+    if (updateData.paymentInfo) {
+      Object.keys(updateData.paymentInfo).forEach(key => {
+        updatePaths[`paymentInfo.${key}`] = updateData.paymentInfo[key];
+      });
+    }
+  
+    // Update other fields in the customer schema if they are provided
+    Object.keys(updateData).forEach(key => {
+      if (key !== 'ticketInfo' && key !== 'paymentInfo') {
+        updatePaths[key] = updateData[key];
+      }
+    });
+  
+    // Perform the update with $set to ensure partial updates are handled properly
+    return await Customer.findByIdAndUpdate(
+      id,
+      { $set: updatePaths },
+      { new: true, runValidators: true }
+    );
+  };
+  
+
+
+
+
 
 // Helper function to delete a customer by ID
 const deleteCustomerById = async (id) => {
@@ -53,8 +87,9 @@ const deletePaymentRecordById = async (customerId, recordId) => {
 
   // Update dueAmount
   customer.paymentInfo.dueAmount += paymentRecord.amt;
-
-  paymentRecord.remove();
+  
+// Remove the payment record from the array
+customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
   return await customer.save();
 };
 
