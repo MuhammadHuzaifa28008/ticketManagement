@@ -3,9 +3,13 @@ const Customer = require('../db/models/Customer.model');
 
 // Helper function to get all customers
 const getAll = async () => {
-  const customers = await Customer.findMany({});
-  return await customers;
-};
+    try {
+      const customers = await Customer.find({});
+      return customers;
+    } catch (err) {
+      throw new Error('Error fetching customers: ' + err.message);
+    }
+  };
 // Helper function to create a new customer
 const createNewCustomer = async (customerData) => {
   const customer = new Customer(customerData);

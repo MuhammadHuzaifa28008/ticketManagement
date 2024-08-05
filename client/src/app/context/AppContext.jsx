@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import users from '../../assets/dummy.json';
+// import users from '../../assets/dummy.json';
+import useApiCall from "../hooks/useApiCall"
 
 // Create a context
 const AppContext = createContext();
@@ -13,6 +14,7 @@ export function useAppContext() {
 export function AppContextProvider({ children }) {
   const [allCustomers, setAllCustomers] = useState([]);
   const [serverConn, setServerConn] = useState(true);
+  const {error, data, } = useApiCall()
 
   useEffect(() => {
     const loadApp = async () => {

@@ -14,6 +14,7 @@ const getAllCustomers = async (req, res) => {
 const createCustomer = async (req, res) => {
     try {
       const customerData = req.body;
+      console.log(customerData)
       const newCustomer = await createNewCustomer(customerData);
       res.status(201).json(newCustomer);
     } catch (err) {

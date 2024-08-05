@@ -7,7 +7,7 @@ const {
   deleteCustomer,
   addPaymentRecord,
   deletePaymentRecord
-} = require('../controllers/customerControllers')
+} = require('../controllers/customerControllers.js')
 
 // Route for Getting all customers
 router.get('/all', getAllCustomers);
