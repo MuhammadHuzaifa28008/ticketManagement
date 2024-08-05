@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useDynamicFilter from './useDynamicFilter'; // Adjust the path as necessary
-import users from '../../assets/dummy.json'
+// import users from '../../assets/dummy.json'
 
 
 

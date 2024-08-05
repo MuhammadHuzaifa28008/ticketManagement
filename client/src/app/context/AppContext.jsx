@@ -14,33 +14,33 @@ export function useAppContext() {
 export function AppContextProvider({ children }) {
   const [allCustomers, setAllCustomers] = useState([]);
   const [serverConn, setServerConn] = useState(true);
-  const {error, data, } = useApiCall()
+  const {error, data, loading, makeApiCall} = useApiCall()
 
   useEffect(() => {
     const loadApp = async () => {
       try {
-        // Remove duplicate entries from the users array based on a unique property, e.g., transactionID
-        const uniqueUsers = users.filter((user, index, self) =>
-          index === self.findIndex((u) => u.id === user.id)
-        );
-        
-        setAllCustomers(uniqueUsers);
+        console.log('making api call')
+        makeApiCall('http://localhost:5000/customer/all');
       } catch (error) {
         console.error('Error loading app data:', error);
         setServerConn(false);
       }
     };
-
+  
     loadApp();
   }, []);
-
+  
   useEffect(() => {
-    console.log('user data updated ')
-    console.log(allCustomers)
-  }, [allCustomers]);
+    if (data) {
+      setAllCustomers(data);
+      console.log(data);
+    }
+    if (error) console.error(error);
+  }, [data, error]);
+  
 
   return (
-    <AppContext.Provider value={{ allCustomers, setAllCustomers, serverConn }}>
+    <AppContext.Provider value={{ error, loading, allCustomers, setAllCustomers, serverConn }}>
       {children}
     </AppContext.Provider>
   );
