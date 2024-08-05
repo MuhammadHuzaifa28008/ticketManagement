@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -9,21 +8,21 @@ const path = require("path");
 const customerRoutes = require("./routes/customerRoutes.js");
 
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config({path: './config/.env'});
 
 // const buildHtml = new URL('./client/build/index.html', import.meta.url);
 
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+// const __filename = url.fileURLToPath(import.meta.url);
+// const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const PORT = process.env.PORT || 5000;
-const dbUri = process.env.dbUrl;
+const dbUrl = process.env.dbURI;
 
 const app = express();
 
-app.use(urlencoded({ extended: true }));
+
 app.use(cors());
-app.use("/customer", userRoutes);
+app.use("/customer", customerRoutes);
 // app.use("/free-apis", apiRoutes);
 app.use(express.static("./client/build"));
 
@@ -36,7 +35,7 @@ app.get(`*`, (req, res) => {
 
 try {
   mongoose
-    .connect(dbUri)
+    .connect(dbUrl)
     .then(() => console.log("connected with mongodb"))
     .catch((err) => console.log(err.message));
 } catch (error) {

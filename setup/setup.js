@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
-const data = require('./data/dummy.json');
-const Customer = require('./model/Customer.model')
+const data = require("./dummy.json")
+const Customer = require('../db/models/Customer.model')
 const dotenv = require('dotenv')
+const path = require('path')
 
-
-dotenv.config('./config/.env');
+dotenv.config({path: './config/.env'});
 
 
 // MongoDB connection logic
-const mongoURI = 'mongodb://localhost:27017/test'; // Replace with your actual MongoDB URI
+const mongoURI = process.env.dbURI; // Replace with your actual MongoDB URI
 
 mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected...'))
@@ -29,6 +29,8 @@ const insertData = async () => {
     mongoose.connection.close(); // Close the connection after inserting
   } catch (err) {
     console.error('Error inserting data:', err);
+  }finally{
+    mongoose.connection.close()
   }
 };
 

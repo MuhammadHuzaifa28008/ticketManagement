@@ -12,8 +12,6 @@ const paymentInfoSchema = new Schema({
   profit: { type: Number, required: true },
   invoiceAmount: { type: Number, required: true },
   paymentRecords: [paymentRecordSchema],
-  paymentStatus: { type: String, required: true },
-  paymentMethod: { type: String, required: true },
   amountPaid: { type: Number, required: true },
   dueAmount: { type: Number, required: true }
 });
@@ -26,7 +24,7 @@ const ticketInfoSchema = new Schema({
 
 const customerSchema = new Schema({
   customerName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String},
   phoneNumber: { type: String, required: true },
   dob: { type: Date, required: true },
   ticketInfo: ticketInfoSchema,
