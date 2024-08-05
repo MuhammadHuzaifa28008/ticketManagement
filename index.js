@@ -1,13 +1,13 @@
-import express from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import cors from "cors";
-import * as url from "url";
-import path from "path";
+const express = require("express");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const url = require("url");
+const path = require("path");
 
-import userRoutes from "./routes/user.js";
-import apiRoutes from "./routes/api.js";
+const customerRoutes = require("./routes/customerRoutes.js");
+
 
 dotenv.config({ path: "./config/.env" });
 
@@ -21,11 +21,10 @@ const dbUri = process.env.dbUrl;
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true }));
 app.use(cors());
 app.use("/customer", userRoutes);
-app.use("/free-apis", apiRoutes);
+// app.use("/free-apis", apiRoutes);
 app.use(express.static("./client/build"));
 
 app.get(`/`, (req, res) => {
@@ -37,7 +36,7 @@ app.get(`*`, (req, res) => {
 
 try {
   mongoose
-    .connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(dbUri)
     .then(() => console.log("connected with mongodb"))
     .catch((err) => console.log(err.message));
 } catch (error) {
