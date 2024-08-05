@@ -1,9 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import customerData from '../../assets/dummy.json' with {type:'json'};
-import fs from 'fs'; // This is typically used in Node.js environments
-import path from 'path'
-const useCustomerData = () => {
-    const [customers, setCustomers] = useState(customerData);
+// import fs from 'fs'; // This is typically used in Node.js environments
+// import path from 'path'
+// fs path and savetofile works wiht node runfile only not for react
+import { useAppContext } from '../context/AppContext';
+
+
+
+const useCustomerDataManagement = () => {
+  const {allCustomers, setAllCustomers}=useAppContext()
+    const [customers, setCustomers] = useState(allCustomers);
+
+useEffect(()=>{
+setCustomers(allCustomers)
+},[allCustomers])
     const saveToFile = (data) => {
         try {
             // const __dirname = "./src/assets/";
@@ -17,29 +27,35 @@ const useCustomerData = () => {
     
 
   const createCustomer = (newCustomer) => {
-    setCustomers((prevCustomers) => {
+    setCustomers((prevCustomers) => { 
       const updatedCustomers = [...prevCustomers, newCustomer];
-      saveToFile(updatedCustomers);
+      // saveToFile(updatedCustomers);
+      // setAllCustomers(updatedCustomers)
       return updatedCustomers;
     });
   };
 
-  const updateCustomer = (updatedCustomer) => {
-    setCustomers((prevCustomers) => {
-      const updatedCustomers = prevCustomers.map((customer) =>
-        customer.customerName === updatedCustomer.customerName ? updatedCustomer : customer
-      );
-      saveToFile(updatedCustomers);
+  const updateCustomer = async (updatedCustomer) => {
+    console.warn('updateCustomer is being called\n');
+    setCustomers((customers) => {
+      const updatedCustomers =  customers.map((customer) =>{
+
+       console.log( customer.id)
+        customer.id === updatedCustomer.id ? updatedCustomer : customer
+      });
+      // saveToFile(updatedCustomers); // Uncomment if needed
+      // setAllCustomers(updatedCustomers);
       return updatedCustomers;
     });
   };
+  
 
   const deleteCustomer = (customerName) => {
     setCustomers((prevCustomers) => {
       const updatedCustomers = prevCustomers.filter(
         (customer) => customer.customerName !== customerName
       );
-      saveToFile(updatedCustomers);
+      // saveToFile(updatedCustomers);
       return updatedCustomers;
     });
   };
@@ -51,7 +67,7 @@ const useCustomerData = () => {
           ? { ...customer, paymentInfo: newPaymentInfo }
           : customer
       );
-      saveToFile(updatedCustomers);
+      // saveToFile(updatedCustomers); 
       return updatedCustomers;
     });
   };
@@ -68,4 +84,4 @@ const useCustomerData = () => {
 
 // saveToFile('data')
 
-export default useCustomerData;
+export default useCustomerDataManagement;

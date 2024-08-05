@@ -19,7 +19,7 @@ export function AppContextProvider({ children }) {
       try {
         // Remove duplicate entries from the users array based on a unique property, e.g., transactionID
         const uniqueUsers = users.filter((user, index, self) =>
-          index === self.findIndex((u) => u.customerName === user.customerName)
+          index === self.findIndex((u) => u.id === user.id)
         );
         
         setAllCustomers(uniqueUsers);
@@ -33,13 +33,12 @@ export function AppContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (allCustomers.length > 0) {
-      console.log('User data updated:', allCustomers);
-    }
+    console.log('user data updated ')
+    console.log(allCustomers)
   }, [allCustomers]);
 
   return (
-    <AppContext.Provider value={{ allCustomers, serverConn }}>
+    <AppContext.Provider value={{ allCustomers, setAllCustomers, serverConn }}>
       {children}
     </AppContext.Provider>
   );
