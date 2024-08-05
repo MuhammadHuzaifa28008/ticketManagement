@@ -79,19 +79,33 @@ const addPaymentRecordById = async (customerId, paymentRecord) => {
 
 // Helper function to delete a payment record by customer ID and record ID
 const deletePaymentRecordById = async (customerId, recordId) => {
-  const customer = await Customer.findById(customerId);
-  if (!customer) throw new Error('Customer not found.');
-
-  const paymentRecord = customer.paymentInfo.paymentRecords.id(recordId);
-  if (!paymentRecord) throw new Error('Payment record not found.');
-
-  // Update dueAmount
-  customer.paymentInfo.dueAmount += paymentRecord.amt;
+    try {
+      // Find the customer by ID
+      const customer = await Customer.findById(customerId);
+      if (!customer) throw new Error('Customer not found.');
   
-// Remove the payment record from the array
-customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
-  return await customer.save();
-};
+      // Find the payment record index
+      const paymentRecordIndex = customer.paymentInfo.paymentRecords.findIndex(
+        (record) => record._id.toString() === recordId
+      );
+      if (paymentRecordIndex === -1) throw new Error('Payment record not found.');
+  
+      // Get the payment record amount
+      const paymentRecordAmount = customer.paymentInfo.paymentRecords[paymentRecordIndex].amt;
+  
+      // Update dueAmount
+      customer.paymentInfo.dueAmount += paymentRecordAmount;
+  
+      // Remove the payment record from the array
+      customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
+  
+      // Save the updated customer document
+      return await customer.save();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+  
 
 
 module.exports ={getAll, createNewCustomer, findCustomerById, updateCustomerById, addPaymentRecordById, deletePaymentRecordById, deleteCustomerById}
