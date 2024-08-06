@@ -5,7 +5,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import FlightIcon from '@mui/icons-material/Flight';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTheme } from '@mui/material/styles';
-import formatDate from '../../utils/formatDate';
+import {formatDateReadable} from '../../utils/formatDate';
 
 const CustomerDetails = ({ customer }) => {
   const theme = useTheme();
@@ -40,7 +40,7 @@ const CustomerDetails = ({ customer }) => {
           }}
         >
           <FlightIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1), color: theme.palette.info.main }} />
-          {formatDate(customer.ticketInfo.dateOfTraveling)}
+          {formatDateReadable(customer.ticketInfo.dateOfTraveling)}
         </Typography>
         <Typography
           variant="body2"
@@ -52,7 +52,7 @@ const CustomerDetails = ({ customer }) => {
           }}
         >
           <ConfirmationNumberIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1), color: theme.palette.secondary.main }} />
-          {formatDate(customer.ticketInfo.dateOfIssue)}
+          {formatDateReadable(customer.ticketInfo.dateOfIssue)}
         </Typography>
       </Box>
       <Box sx={{ flex: 1 }}>

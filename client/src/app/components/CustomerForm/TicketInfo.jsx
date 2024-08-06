@@ -1,5 +1,8 @@
 import DateInput from '../common/inputs/DateInput';
 import { Grid, TextField, Typography } from '@mui/material';
+import {formatDate} from '../../utils/formatDate';
+
+
 
 function TicketInfo({ formData, handleInputChange, handleDateChange }) {
   return (
@@ -21,17 +24,19 @@ function TicketInfo({ formData, handleInputChange, handleDateChange }) {
       <Grid item xs={12} sm={6} md={6} order={{ xs: 2, md: 2 }}>
         <DateInput
           title="Date of Traveling"
-          value={formData.ticketInfo.dateOfTraveling}
+          name= "ticketInfo.dateOfTraveling"
+          value={formatDate(formData.ticketInfo.dateOfTraveling)}
           required={true}
-          onChange={(date) => handleDateChange('ticketInfo.dateOfTraveling', date)}
+          onChange={handleDateChange}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 3, md: 3 }}>
         <DateInput
           title="Date of Issue"
-          value={formData.ticketInfo.dateOfIssue}
+          name="ticketInfo.dateOfIssue"
+          value={formatDate(formData.ticketInfo.dateOfIssue)}
           required={true}
-          onChange={(date) => handleDateChange('ticketInfo.dateOfIssue', date)}
+          onChange={handleDateChange}
         />
       </Grid>
     </Grid>

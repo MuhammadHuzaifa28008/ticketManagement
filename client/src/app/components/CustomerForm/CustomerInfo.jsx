@@ -1,6 +1,11 @@
 import React from 'react';
 import { Grid, Typography, TextField } from '@mui/material';
 import DateInput from '../common/inputs/DateInput';
+import {formatDate} from '../../utils/formatDate';
+
+
+
+
 
 function CustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
   return (
@@ -48,7 +53,7 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
         <DateInput
           title="Date of Birth"
           name="dob"
-          value={formData.dob}
+          value={formatDate(formData.dob)}
           required={true}
           onChange={handleDateChange}
           error={errors.dob}

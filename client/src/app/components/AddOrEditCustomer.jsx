@@ -9,6 +9,7 @@ import useApiCall from '../hooks/useApiCall';
 import SnackBar from '../components/common/SnackBar';
 import LoadingCircular from '../components/common/LoadingCircular';
 
+
 export default function AddOrEditCustomer() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function AddOrEditCustomer() {
     customerName: customer.customerName || '',
     email: customer.email || '',
     phoneNumber: customer.phoneNumber || '',
-    dob: customer.dob || null,
+    dob:  customer.dob || null,
     ticketInfo: {
       PNRNo: customer.ticketInfo?.PNRNo || '',
       dateOfTraveling: customer.ticketInfo?.dateOfTraveling || null,
@@ -95,6 +96,14 @@ useEffect(()=>{
 
   const validate = () => {
     let newErrors = {};
+    const today = new Date();
+    const minYear = 1940;
+    const maxTravelDate = new Date(today);
+    maxTravelDate.setFullYear(today.getFullYear() + 1); // 1 year in the future
+    const minTravelDate = new Date(today);
+    minTravelDate.setFullYear(today.getFullYear() - 1); // 1 year in the past
+  
+    // Check required fields
     if (!formData.customerName) newErrors.customerName = 'Customer Name is required';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
@@ -104,8 +113,37 @@ useEffect(()=>{
     if (!formData.paymentInfo.ticketPrice) newErrors.ticketPrice = 'Ticket Price is required';
     if (!formData.paymentInfo.profit) newErrors.profit = 'Profit is required';
     if (!formData.paymentInfo.invoiceAmount) newErrors.invoiceAmount = 'Invoice Amount is required';
-    if (!formData.paymentInfo.amountPaid) newErrors.amountPaid = 'Amount paid is required';
-
+    if (!formData.paymentInfo.amountPaid) newErrors.amountPaid = 'Amount Paid is required';
+  
+    // Validate Date of Birth
+    if (formData.dob) {
+      const dobYear = new Date(formData.dob).getFullYear();
+      if (dobYear > today.getFullYear()) {
+        newErrors.dob = 'Year cannot be a future date.';
+      } else if (dobYear < minYear) {
+        newErrors.dob = `Year cannot be less than ${minYear}.`;
+      }
+    }
+  
+    // Validate Date of Traveling and Date of Issue
+    const validateDate = (date, fieldName) => {
+      const parsedDate = new Date(date);
+      if (parsedDate > maxTravelDate) {
+        newErrors[fieldName] = 'Date cannot be more than 1 year in the future.';
+      } else if (parsedDate < minTravelDate) {
+        newErrors[fieldName] = 'Date cannot be more than 1 year in the past.';
+      }
+    };
+  
+    if (formData.ticketInfo.dateOfTraveling) {
+      validateDate(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
+    }
+    
+    if (formData.ticketInfo.dateOfIssue) {
+      validateDate(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
+    }
+  
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -145,6 +183,7 @@ useEffect(()=>{
 
   const handleDateChange = (field, date) => {
     const keys = field.split('.');
+    
     if (keys.length === 1) {
       setFormData((prevState) => ({
         ...prevState,
@@ -159,7 +198,19 @@ useEffect(()=>{
         },
       }));
     }
+  
+    // Remove error if the date is valid
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      if (keys.length === 1 && newErrors[field]) {
+        delete newErrors[field];
+      } else if (keys.length > 1 && newErrors[keys[1]]) {
+        delete newErrors[keys[1]];
+      }
+      return newErrors;
+    });
   };
+  
 
   const handleSubmit = async () => {
     if (validate()) {
@@ -237,3 +288,6 @@ useEffect(()=>{
     </Paper>
   )
 };
+
+
+
