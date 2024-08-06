@@ -8,7 +8,7 @@ import { useAppContext } from '../context/AppContext';
 import useApiCall from '../hooks/useApiCall';
 import SnackBar from '../components/common/SnackBar';
 import LoadingCircular from '../components/common/LoadingCircular';
-
+import { formatDate } from '../utils/formatDate';
 
 export default function AddOrEditCustomer() {
   const location = useLocation();
@@ -17,22 +17,21 @@ export default function AddOrEditCustomer() {
   const theme = useTheme();
   const { setFetch } = useAppContext();
 
-  const [formData, setFormData] = useState({
+  
+   const [formData, setFormData] = useState({
     customerName: customer.customerName || '',
     email: customer.email || '',
     phoneNumber: customer.phoneNumber || '',
-    dob:  customer.dob || null,
+    dob:  formatDate(customer.dob) || null,
     ticketInfo: {
       PNRNo: customer.ticketInfo?.PNRNo || '',
-      dateOfTraveling: customer.ticketInfo?.dateOfTraveling || null,
-      dateOfIssue: customer.ticketInfo?.dateOfIssue || null,
+      dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
+      dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
     },
     paymentInfo: {
       ticketPrice: customer.paymentInfo?.ticketPrice || 0,
       profit: customer.paymentInfo?.profit || 0,
       invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
-      paymentStatus: customer.paymentInfo?.paymentStatus || 'pending',
-      paymentMethod: customer.paymentInfo?.paymentMethod || '',
       amountPaid: customer.paymentInfo?.amountPaid || 0,
       dueAmount: customer.paymentInfo?.dueAmount || 0,
     },
@@ -43,7 +42,6 @@ export default function AddOrEditCustomer() {
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const { data, loading, error, makeApiCall } = useApiCall();
 
   useEffect(() => {
@@ -52,18 +50,16 @@ export default function AddOrEditCustomer() {
         customerName: customer.customerName || '',
         email: customer.email || '',
         phoneNumber: customer.phoneNumber || '',
-        dob: customer.dob || null,
+        dob: formatDate(customer.dob) || null,
         ticketInfo: {
           PNRNo: customer.ticketInfo?.PNRNo || '',
-          dateOfTraveling: customer.ticketInfo?.dateOfTraveling || null,
-          dateOfIssue: customer.ticketInfo?.dateOfIssue || null,
+          dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
+          dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
         },
         paymentInfo: {
           ticketPrice: customer.paymentInfo?.ticketPrice || 0,
           profit: customer.paymentInfo?.profit || 0,
           invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
-          paymentStatus: customer.paymentInfo?.paymentStatus || 'pending',
-          paymentMethod: customer.paymentInfo?.paymentMethod || '',
           amountPaid: customer.paymentInfo?.amountPaid || 0,
           dueAmount: customer.paymentInfo?.dueAmount || 0,
         },
@@ -73,7 +69,7 @@ export default function AddOrEditCustomer() {
   }, [customer]);
 
 useEffect(()=>{
-  if (errors) console.error(Object.keys(errors))
+  if (Object.keys(errors).length >0 ) console.error(Object.keys(errors))
 },[errors])
 
 

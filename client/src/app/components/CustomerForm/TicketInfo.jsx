@@ -25,7 +25,7 @@ function TicketInfo({ formData, handleInputChange, handleDateChange }) {
         <DateInput
           title="Date of Traveling"
           name= "ticketInfo.dateOfTraveling"
-          value={formatDate(formData.ticketInfo.dateOfTraveling)}
+          value={formData.ticketInfo.dateOfTraveling}
           required={true}
           onChange={handleDateChange}
         />
@@ -34,7 +34,7 @@ function TicketInfo({ formData, handleInputChange, handleDateChange }) {
         <DateInput
           title="Date of Issue"
           name="ticketInfo.dateOfIssue"
-          value={formatDate(formData.ticketInfo.dateOfIssue)}
+          value={formData.ticketInfo.dateOfIssue}
           required={true}
           onChange={handleDateChange}
         />

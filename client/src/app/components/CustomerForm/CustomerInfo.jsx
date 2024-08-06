@@ -53,7 +53,7 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
         <DateInput
           title="Date of Birth"
           name="dob"
-          value={formatDate(formData.dob)}
+          value={formData.dob}
           required={true}
           onChange={handleDateChange}
           error={errors.dob}
