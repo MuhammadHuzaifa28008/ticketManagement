@@ -11,6 +11,18 @@ const getAllCustomers = async (req, res) => {
   };
 
 
+const getCustomer = async (req, res)=>{
+  try {
+    const customerId = req.params.id;
+    const customer = await findCustomerById(customerId);
+    res.status(200).json(customer);
+    if (!customer) return res.status(404).json({ error: 'Customer not found.' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+
 const createCustomer = async (req, res) => {
     try {
       const customerData = req.body;
@@ -54,7 +66,7 @@ const createCustomer = async (req, res) => {
       if (!customer) return res.status(404).json({ error: 'Customer not found.' });
   
       if (customer.paymentInfo.dueAmount > 0) {
-        return res.status(400).json({ error: 'Cannot delete customer with due amount greater than 0.' });
+        return res.status(400).json({ error: `Cannot delete customer with due amount ${customer.paymentInfo.dueAmount}.` });
       }
   
       await deleteCustomerById(customerId);

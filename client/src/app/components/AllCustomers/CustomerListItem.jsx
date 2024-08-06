@@ -1,100 +1,110 @@
-import React from 'react';
-import { ListItem, useMediaQuery, Stack, ListItemAvatar, Avatar, Typography, Box, IconButton } from '@mui/material';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-import PhoneIcon from '@mui/icons-material/Phone';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CustomerDetails from './CustomerDetails';
+import React, { useEffect, useState } from 'react';
+import { ListItem, useMediaQuery, Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { useAppContext } from '../../context/AppContext';
+import useApiCall from '../../hooks/useApiCall';
+import CustomerInfo from './CustomerListItem.components/CustomerInfo';
+import FlightAndPaymentDetails from './CustomerListItem.components/FlightAndPaymentDetails';
+import CustomerActionButtons from './CustomerListItem.components/CustomerActionButtons';
+import ConfirmationDialog from '../../components/common/FeedBack/ConfirmationDialog';
+import LoadingBackdrop from '../../components/common/FeedBack/LoadingBackDrop';
+import CustomSnackbar from '../../components/common/FeedBack/SnackBar'; // Adjust the import path as needed
 
-const CustomerListItem = ({ customer, onDelete }) => {
+const CustomerListItem = ({ customer }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const { loading, makeApiCall, error } = useApiCall();
+  const { setFetch } = useAppContext();
+
+
+
+useEffect(()=>{
+  if(!loading){
+
+    if (!error) {
+      setSnackbarMessage(`${customer.customerName} deleted successfully`);
+      setSnackbarSeverity('success');
+      setFetch(true);
+    } else {
+      setSnackbarMessage(error.error || 'Error deleting customer');
+      setSnackbarSeverity('error');
+    }
+  }
+},[error, loading])
+
+
+
+  const handleDelete = async () => {
+    setOpenBackdrop(true);
+    try {
+      await makeApiCall(`http://localhost:5000/customer/${customer._id}`, { method: 'DELETE' });
+
+    } catch (err) {
+      setSnackbarMessage('Error deleting customer');
+      setSnackbarSeverity('error');
+      console.error('Error deleting customer:', err);
+    } finally {
+      setOpenBackdrop(false);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (customer.paymentInfo.dueAmount > 0) {
+      setOpenDialog(true);
+    } else {
+      handleDelete();
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
-    <ListItem
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        marginBottom: theme.spacing(2),
-        width: '100%',
-        maxWidth: '40rem',
-        padding: theme.spacing(2),
-        borderRadius: theme.shape.borderRadius,
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        alignItems: isMobile ? 'center' : 'flex-start', // Center on mobile, align left otherwise
-        // alignItems: 'flex-start', // Center on mobile, align left otherwise
-      }}
-    >
-      <Stack
-        direction="row"
-        spacing={2}
-        alignItems="center"
-        sx={{ width: '100%', mb: isMobile ? 2 : 0 }}
-      >
-        <ListItemAvatar>
-          <Avatar>{customer.customerName[0]}</Avatar>
-        </ListItemAvatar>
-        <Box sx={{ ml: 2, flex: 1 }}>
-          <Typography variant="h6" noWrap>
-            {customer.customerName}
-          </Typography>
-          <Typography variant="body2" color="text.primary" display="flex" alignItems="center" noWrap>
-            <ConfirmationNumberIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-            {customer.ticketInfo.PNRNo}
-          </Typography>
-          <Typography variant="body2" color="text.primary" display="flex" alignItems="center" noWrap>
-            <PhoneIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1) }} />
-            {customer.phoneNumber}
-          </Typography>
-        </Box>
-      </Stack>
-
-      {/* Customer Details Section */}
-      <CustomerDetails customer={customer} sx={{ width: '100%', mb: isMobile ? 2 : 0 }} />
-
-      {/* Action Buttons */}
-      <Stack
-        direction="row"
-        spacing={1}
+    <>
+      <ListItem
         sx={{
-          mt: isMobile ? 2 : 0,
-          ml: isMobile ? 0 : 'auto',
-          justifyContent: 'flex-end',
-          width: isMobile ? '100%' : 'auto',
+          backgroundColor: theme.palette.background.paper,
+          marginBottom: theme.spacing(2),
+          width: '100%',
+          maxWidth: '40rem',
+          padding: theme.spacing(2),
+          borderRadius: theme.shape.borderRadius,
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'center' : 'flex-start',
         }}
       >
-        <Link to= '/add-or-edit-customer-data' state = { customer } >
-        <IconButton
-          edge="end"
-          aria-label="edit"
-          // onClick={onEdit}
-          sx={{
-            color: theme.palette.text.primary,
-            '&:hover': {
-              backgroundColor: theme.palette.action.hover,
-            },
-          }}
-          >
-          <EditIcon />
-        </IconButton>
-          </Link>
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          onClick={onDelete}
-          sx={{
-            color: theme.palette.error.main,
-            '&:hover': {
-              backgroundColor: theme.palette.error.light,
-            },
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </Stack>
-    </ListItem>
+        <Stack direction={isMobile ? 'column' : 'row'} spacing={2} alignItems="center" sx={{ width: '100%' }}>
+          <CustomerInfo customer={customer} />
+          <FlightAndPaymentDetails customer={customer} />
+        </Stack>
+
+        <CustomerActionButtons customer={customer} onDeleteClick={handleDeleteClick} />
+      </ListItem>
+
+      <LoadingBackdrop open={openBackdrop} />
+
+      <ConfirmationDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={() => { setOpenDialog(false); handleDelete(); }}
+        dueAmount={customer.paymentInfo.dueAmount}
+      />
+
+      <CustomSnackbar
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        openSB={openSnackbar}
+        onCloseSB={handleSnackbarClose}
+      />
+    </>
   );
 };
 

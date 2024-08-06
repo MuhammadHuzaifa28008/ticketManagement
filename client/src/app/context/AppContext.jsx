@@ -44,7 +44,7 @@ export function AppContextProvider({ children }) {
   
 
   return (
-    <AppContext.Provider value={{ error, loading, allCustomers, setFetch }}>
+    <AppContext.Provider value={{ error, contextLoading:loading , allCustomers, setFetch }}>
       {children}
     </AppContext.Provider>
   );

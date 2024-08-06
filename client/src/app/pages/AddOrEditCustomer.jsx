@@ -6,8 +6,8 @@ import TicketInfo from '../components/CustomerForm/TicketInfo';
 import PaymentInfo from '../components/CustomerForm/PaymentInfo';
 import { useAppContext } from '../context/AppContext';
 import useApiCall from '../hooks/useApiCall';
-import SnackBar from '../components/common/SnackBar';
-import LoadingCircular from '../components/common/LoadingCircular';
+import SnackBar from '../components/common/FeedBack/SnackBar';
+import LoadingCircular from '../components/common/FeedBack/LoadingCircular';
 import { formatDate } from '../utils/formatDate';
 
 export default function AddOrEditCustomer() {

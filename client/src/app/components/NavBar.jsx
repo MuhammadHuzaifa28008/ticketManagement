@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, AppBar,  Toolbar, IconButton, Typography, Badge, Menu, MenuItem } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, Badge, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'; // Icon for pending payments
-import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket'; // Icon for flights
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { Link } from 'react-router-dom';
 
-export default function NavBar() {
+const NavBar = () => {
   const theme = useTheme();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -29,44 +30,85 @@ export default function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem onClick={handleMobileMenuClose} component={Link} to="/payments">
         <IconButton size="large" aria-label="show pending payments" color="inherit">
           <Badge badgeContent={4} color="error">
             <AttachMoneyIcon />
           </Badge>
         </IconButton>
-        <p>Pending Payments</p>
+        <Typography variant="body2">Pending Payments</Typography>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={handleMobileMenuClose}>
         <IconButton size="large" aria-label="show flight notifications" color="inherit">
           <Badge badgeContent={17} color="error">
             <AirplaneTicketIcon />
           </Badge>
         </IconButton>
-        <p>Flights</p>
+        <Typography variant="body2">Flights</Typography>
       </MenuItem>
     </Menu>
   );
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.main }}>
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: theme.palette.primary.dark,
+        padding: theme.spacing(1),
+        boxShadow: theme.shadows[4],
+      }}
+    >
       <Toolbar>
-        <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          noWrap
+          sx={{
+            flexGrow: 1,
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'color 0.3s',
+            '&:hover': {
+              color: theme.palette.secondary.main,
+            },
+          }}
+        >
           Logo
         </Typography>
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-          <IconButton size="large" aria-label="show pending payments" color="inherit">
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          <IconButton
+            size="large"
+            aria-label="show pending payments"
+            color="inherit"
+            component={Link}
+            to="/payments"
+            sx={{
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+            }}
+          >
             <Badge badgeContent={4} color="error">
               <AttachMoneyIcon />
             </Badge>
           </IconButton>
-          <IconButton size="large" aria-label="show flight notifications" color="inherit">
+          <IconButton
+            size="large"
+            aria-label="show flight notifications"
+            color="inherit"
+            sx={{
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+            }}
+          >
             <Badge badgeContent={17} color="error">
               <AirplaneTicketIcon />
             </Badge>
           </IconButton>
         </Box>
-        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
           <IconButton
             size="large"
             aria-label="show more"
@@ -82,4 +124,6 @@ export default function NavBar() {
       {renderMobileMenu}
     </AppBar>
   );
-}
+};
+
+export default NavBar;

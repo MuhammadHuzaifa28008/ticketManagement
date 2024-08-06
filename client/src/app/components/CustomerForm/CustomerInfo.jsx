@@ -24,8 +24,8 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           error={!!errors.customerName}
           helperText={errors.customerName}
           sx={{ mb: 2,
-            inputProps: { maxLength: 20 },
            }}
+           inputProps={{maxLength:20}} 
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -37,7 +37,7 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           onChange={handleInputChange}
           sx={{ mb: 2,
            }}
-           inputProps={{maxLength:20}} 
+           inputProps={{maxLength:20}}
         />
       </Grid>
       <Grid item xs={12} sm={6}>

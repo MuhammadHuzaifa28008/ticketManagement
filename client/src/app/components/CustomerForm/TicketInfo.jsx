@@ -21,6 +21,8 @@ function TicketInfo({ formData, handleInputChange, handleDateChange, errors }) {
           sx={{ mb: 2 }}
           error = {!!errors.PNRNo}
           helperText={errors.PNRNo}
+
+          inputProps={{maxLength:20}} 
         />
       </Grid>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 2, md: 2 }}>
