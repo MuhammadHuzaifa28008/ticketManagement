@@ -48,7 +48,9 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           title="Date of Birth"
           value={formData.dob}
           required={true}
-          onChange={(date) => handleDateChange('dob', date)}
+          error={!!errors.dob}
+          helperText={errors.dob}
+          onChange={handleInputChange}
           sx={{ mb: '2em' }}
         />
       </Grid>

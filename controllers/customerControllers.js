@@ -24,10 +24,23 @@ const createCustomer = async (req, res) => {
   
   const updateCustomer = async (req, res) => {
     try {
+        // console.log('update customer called')
       const customerId = req.params.id;
+      if(!customerId) {
+        console.error('please provide id');
+         throw new error('please provide id')
+        }
+        // else console.log(customerId)
       const updateData = req.body;
+      if(!updateData) {
+        console.error('please provide data'); 
+        throw new error('please proivde data')
+      }
+      // else console.log(updateData)
+
       const updatedCustomer = await updateCustomerById(customerId, updateData);
       if (!updatedCustomer) return res.status(404).json({ error: 'Customer not found.' });
+      // console.log('updatedCustomer:', updatedCustomer)
       res.json(updatedCustomer);
     } catch (err) {
       res.status(400).json({ error: err.message });
@@ -74,4 +87,3 @@ const createCustomer = async (req, res) => {
   };
   
   module.exports = {getAllCustomers, createCustomer, updateCustomer, deleteCustomer, addPaymentRecord, deletePaymentRecord };
-  

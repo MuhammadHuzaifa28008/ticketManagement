@@ -35,7 +35,7 @@ export default function AddOrEditCustomer() {
       amountPaid: customer.paymentInfo?.amountPaid || 0,
       dueAmount: customer.paymentInfo?.dueAmount || 0,
     },
-    id: customer.id || null,
+    _id: customer._id || null,
   });
 
   const [errors, setErrors] = useState({});
@@ -66,10 +66,15 @@ export default function AddOrEditCustomer() {
           amountPaid: customer.paymentInfo?.amountPaid || 0,
           dueAmount: customer.paymentInfo?.dueAmount || 0,
         },
-        id: customer.id || null,
+        _id: customer._id || null,
       });
     }
   }, [customer]);
+
+useEffect(()=>{
+  if (errors) console.error(Object.keys(errors))
+},[errors])
+
 
   useEffect(()=>{
     if(data) {
@@ -84,10 +89,6 @@ export default function AddOrEditCustomer() {
         setSnackbarMessage('unable to Save Data')
     }
   },[data, error, loading])
-
-
-
-
 
 
 
@@ -112,6 +113,8 @@ export default function AddOrEditCustomer() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     const keys = name.split('.');
+  
+    // Update formData
     if (keys.length === 1) {
       setFormData((prevState) => ({
         ...prevState,
@@ -126,7 +129,19 @@ export default function AddOrEditCustomer() {
         },
       }));
     }
+  
+    // Remove error if field is valid
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      if (keys.length === 1 && newErrors[name]) {
+        delete newErrors[name];
+      } else if (keys.length > 1 && newErrors[keys[1]]) {
+        delete newErrors[keys[1]];
+      }
+      return newErrors;
+    });
   };
+  
 
   const handleDateChange = (field, date) => {
     const keys = field.split('.');
@@ -150,13 +165,20 @@ export default function AddOrEditCustomer() {
     if (validate()) {
       setIsLoading(true);
       try {
+        if(customer.customerName){
 
-        // Update existing customer
-        await makeApiCall(`http://localhost:5000/customer/${customer._id}`, {
-          method: 'put',
-          data: formData,
-        });
+          // Update existing customer
+          if(!formData._id) {console.error('id is null in form data aborting'); 
+            return
+          }
 
+          await makeApiCall(`http://localhost:5000/customer/${formData._id}`, {
+            method: 'put',
+            data: formData,
+          });
+          
+          
+        }
       } catch (err) {
         console.error('Error saving customer:', err);
         setSnackbarMessage('Failed to save customer. Please try again later.');
@@ -213,5 +235,5 @@ export default function AddOrEditCustomer() {
 
 
     </Paper>
-  );
-}
+  )
+};

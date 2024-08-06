@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Typography } from '@mui/material';
 
-const DateInput = ({ title, value, onChange, required }) => {
+const DateInput = ({ title, value, onChange,error, helperText, required }) => {
   const [inputValue, setInputValue] = useState(value || '');
-  const [error, setError] = useState('');
+  const [formatErr, setFormatErr] = useState();
 
   useEffect(() => {
     // if (required && !inputValue) {
@@ -27,24 +27,24 @@ const DateInput = ({ title, value, onChange, required }) => {
 
       // Check year range
       if (year < minYear || year > maxYear) {
-        setError('Year must be within one year of the current year.');
+        setFormatErr('Year must be within one year of the current year.');
         return false;
       }
 
       // Check month range
       if (month < 1 || month > 12) {
-        setError('Month must be between 01 and 12.');
+        setFormatErr('Month must be between 01 and 12.');
         return false;
       }
 
       // Check day range
       const daysInMonth = new Date(year, month, 0).getDate();
       if (day < 1 || day > daysInMonth) {
-        setError('Day must be valid for the given month and year.');
+        setFormatErr('Day must be valid for the given month and year.');
         return false;
       }
 
-      setError('');
+      setFormatErr('');
       return true;
     }
     return false;
@@ -86,7 +86,7 @@ const DateInput = ({ title, value, onChange, required }) => {
           maxLength: 10, // Limit input length to "yyyy-mm-dd"
         }}
         error={!!error}
-        helperText={error}
+        helperText={helperText? helperText : formatErr}
       />
     </Grid>
   );
