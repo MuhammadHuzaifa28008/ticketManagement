@@ -1,13 +1,14 @@
+import React from 'react';
 import { Grid, Typography, TextField } from '@mui/material';
 import DateInput from '../common/inputs/DateInput';
 
 function CustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
   return (
     <Grid container spacing={2} mt={2}>
-      <Grid item xs={12} sm={6} md={6} order={{ xs: 1, md: 1 }}>
-        <Typography variant = {'h4'}>Customer Information</Typography>
+      <Grid item xs={12} sm={6} md={6}>
+        <Typography variant={'h4'}>Customer Information</Typography>
       </Grid>
-      <Grid item xs={12} sm={6} order={{ xs: 2, md: 2 }}>
+      <Grid item xs={12} sm={6}>
         <TextField
           required
           label="Customer Name"
@@ -20,7 +21,7 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           sx={{ mb: 2 }}
         />
       </Grid>
-      <Grid item xs={12} sm={6} order={{ xs: 3, md: 3 }}>
+      <Grid item xs={12} sm={6}>
         <TextField
           label="Email"
           name="email"
@@ -30,7 +31,7 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           sx={{ mb: 2 }}
         />
       </Grid>
-      <Grid item xs={12} sm={6} order={{ xs: 4, md: 4 }}>
+      <Grid item xs={12} sm={6}>
         <TextField
           required
           label="Phone Number"
@@ -43,15 +44,15 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           sx={{ mb: 2 }}
         />
       </Grid>
-      <Grid item xs={12} sm={6} order={{ xs: 5, md: 5 }}>
+      <Grid item xs={12} sm={6}>
         <DateInput
           title="Date of Birth"
+          name="dob"
           value={formData.dob}
           required={true}
-          error={!!errors.dob}
+          onChange={handleDateChange}
+          error={errors.dob}
           helperText={errors.dob}
-          onChange={handleInputChange}
-          sx={{ mb: '2em' }}
         />
       </Grid>
     </Grid>
