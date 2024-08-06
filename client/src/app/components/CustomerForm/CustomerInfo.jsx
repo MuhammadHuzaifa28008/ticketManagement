@@ -23,7 +23,9 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           onChange={handleInputChange}
           error={!!errors.customerName}
           helperText={errors.customerName}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2,
+            inputProps: { maxLength: 20 },
+           }}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -33,7 +35,9 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           fullWidth
           value={formData.email}
           onChange={handleInputChange}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2,
+           }}
+           inputProps={{maxLength:20}} 
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -41,18 +45,25 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
           required
           label="Phone Number"
           name="phoneNumber"
+          type='tel'
           fullWidth
           value={formData.phoneNumber}
           onChange={handleInputChange}
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2,
+
+          }}
+
+           inputProps={{maxLength:15}} 
+          
         />
       </Grid>
       <Grid item xs={12} sm={6}>
         <DateInput
           title="Date of Birth"
           name="dob"
+          type="date"
           value={formData.dob}
           required={true}
           onChange={handleDateChange}

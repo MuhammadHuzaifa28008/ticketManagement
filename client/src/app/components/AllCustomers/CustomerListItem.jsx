@@ -1,6 +1,5 @@
 import React from 'react';
 import { ListItem, useMediaQuery, Stack, ListItemAvatar, Avatar, Typography, Box, IconButton } from '@mui/material';
-import MailIcon from '@mui/icons-material/Mail';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EditIcon from '@mui/icons-material/Edit';

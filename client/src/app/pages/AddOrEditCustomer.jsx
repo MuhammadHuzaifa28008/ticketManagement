@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme, Button, Grid, Typography, Paper } from '@mui/material';
+import { useTheme, Button, Grid, Typography, Paper, Fade } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import CustomerInfo from './CustomerForm/CustomerInfo';
-import TicketInfo from './CustomerForm/TicketInfo';
-import PaymentInfo from './CustomerForm/PaymentInfo';
+import CustomerInfo from '../components/CustomerForm/CustomerInfo';
+import TicketInfo from '../components/CustomerForm/TicketInfo';
+import PaymentInfo from '../components/CustomerForm/PaymentInfo';
 import { useAppContext } from '../context/AppContext';
 import useApiCall from '../hooks/useApiCall';
 import SnackBar from '../components/common/SnackBar';
@@ -16,7 +16,7 @@ export default function AddOrEditCustomer() {
   const customer = location.state || {};
   const theme = useTheme();
   const { setFetch } = useAppContext();
-
+  const [checked, setChecked] = React.useState(false);
   
    const [formData, setFormData] = useState({
     customerName: customer.customerName || '',
@@ -44,34 +44,37 @@ export default function AddOrEditCustomer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data, loading, error, makeApiCall } = useApiCall();
 
-  useEffect(() => {
-    if (customer) {
-      setFormData({
-        customerName: customer.customerName || '',
-        email: customer.email || '',
-        phoneNumber: customer.phoneNumber || '',
-        dob: formatDate(customer.dob) || null,
-        ticketInfo: {
-          PNRNo: customer.ticketInfo?.PNRNo || '',
-          dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
-          dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
-        },
-        paymentInfo: {
-          ticketPrice: customer.paymentInfo?.ticketPrice || 0,
-          profit: customer.paymentInfo?.profit || 0,
-          invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
-          amountPaid: customer.paymentInfo?.amountPaid || 0,
-          dueAmount: customer.paymentInfo?.dueAmount || 0,
-        },
-        _id: customer._id || null,
-      });
-    }
-  }, [customer]);
+  // useEffect(() => {
+  //   if (customer) {
+  //     setFormData({
+  //       customerName: customer.customerName || '',
+  //       email: customer.email || '',
+  //       phoneNumber: customer.phoneNumber || '',
+  //       dob: formatDate(customer.dob) || null,
+  //       ticketInfo: {
+  //         PNRNo: customer.ticketInfo?.PNRNo || '',
+  //         dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
+  //         dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
+  //       },
+  //       paymentInfo: {
+  //         ticketPrice: customer.paymentInfo?.ticketPrice || 0,
+  //         profit: customer.paymentInfo?.profit || 0,
+  //         invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
+  //         amountPaid: customer.paymentInfo?.amountPaid || 0,
+  //         dueAmount: customer.paymentInfo?.dueAmount || 0,
+  //       },
+  //       _id: customer._id || null,
+  //     });
+  //   }
+  // }, [customer]);
 
 useEffect(()=>{
-  if (Object.keys(errors).length >0 ) console.error(Object.keys(errors))
+  if (Object.keys(errors).length >0 ) console.log(errors)
 },[errors])
 
+useEffect(()=>{
+setChecked(true)
+},[])
 
   useEffect(()=>{
     if(data) {
@@ -99,6 +102,42 @@ useEffect(()=>{
     const minTravelDate = new Date(today);
     minTravelDate.setFullYear(today.getFullYear() - 1); // 1 year in the past
   
+    const validateDayAndMonth = (date, fieldName) => {
+
+      // Parse the date
+      const parsedDate = new Date(date);
+    
+      // Extract year, month, and day
+      const year = parsedDate.getFullYear();
+      const month = parsedDate.getMonth() + 1; // getMonth() returns 0-based month
+      const day = parsedDate.getDate();
+    
+      // Check if the date is valid
+      if (isNaN(parsedDate.getTime())) {
+        newErrors[fieldName] = 'Invalid date format. - yyyy-mm-dd';
+      }
+    
+      // Check if year is valid
+      if (year < 0) {
+        newErrors[fieldName] = 'Year must be a valid positive number.';
+  
+      }
+    
+      // Check if the month is valid
+      if (month < 1 || month > 12) {
+        newErrors[fieldName] = 'Month must be between 1 and 12.';
+     
+      }
+    
+      // Check if the day is valid for the given month and year
+      const daysInMonth = new Date(year, month, 0).getDate();
+      if (day < 1 || day > daysInMonth) {
+        newErrors[fieldName] = `Day must be between 1 and ${daysInMonth} for the month ${month} in the year ${year}.`;
+       
+      }
+    };
+    
+  
     // Check required fields
     if (!formData.customerName) newErrors.customerName = 'Customer Name is required';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
@@ -114,11 +153,12 @@ useEffect(()=>{
     // Validate Date of Birth
     if (formData.dob) {
       const dobYear = new Date(formData.dob).getFullYear();
-      if (dobYear > today.getFullYear()) {
-        newErrors.dob = 'Year cannot be a future date.';
+      if (dobYear > today.getFullYear()) { // dob cannot be in the future
+        newErrors.dob = 'Date of birth cannot be a future date.';
       } else if (dobYear < minYear) {
         newErrors.dob = `Year cannot be less than ${minYear}.`;
       }
+      validateDayAndMonth(formData.dob, 'dob');
     }
   
     // Validate Date of Traveling and Date of Issue
@@ -133,16 +173,18 @@ useEffect(()=>{
   
     if (formData.ticketInfo.dateOfTraveling) {
       validateDate(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
-    }
-    
-    if (formData.ticketInfo.dateOfIssue) {
-      validateDate(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
+      validateDayAndMonth(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
     }
   
+    if (formData.ticketInfo.dateOfIssue) {
+      validateDate(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
+      validateDayAndMonth(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
+    }
   
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -234,6 +276,7 @@ useEffect(()=>{
         setIsLoading(false);
       }
     }
+    setSnackbarMessage('could not save data plese try again')
   };
 
   const handleCancel = () => {
@@ -241,6 +284,8 @@ useEffect(()=>{
   };
 
   return (
+    <Fade in={checked} timeout={500}>
+
     <Paper sx={{ maxWidth: '100%', boxSizing: 'border-box', padding: theme.spacing(3) }}>
       <Typography variant="h1" gutterBottom>
         {formData.customerName ? 'Edit Customer' : 'Add Customer'}
@@ -260,7 +305,7 @@ useEffect(()=>{
       <PaymentInfo
         formData={formData}
         handleInputChange={handleInputChange}
-        errors={errors}
+        formErrors={errors}
       />
       <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isLoading}>
@@ -277,11 +322,12 @@ useEffect(()=>{
         message={snackbarMessage}
         openSB={!!snackbarMessage}
         onCloseSB={() => setSnackbarMessage('')}
-        severity={data? "success":"error"}
+        severity={data? "success":  Object.keys(errors).length>0? "warn": "error"}
       />
 
 
     </Paper>
+    </Fade>
   )
 };
 

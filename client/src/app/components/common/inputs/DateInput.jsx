@@ -21,12 +21,11 @@ const DateInput = ({ title, name, value, required, onChange, error, helperText }
 
   return (
     <Grid item xs={12} mb={2}>
-      <Typography variant="body1" gutterBottom>
-        {title}
-      </Typography>
       <TextField
+      label={title}
         fullWidth
         required={required}
+        type="date"
         placeholder="yyyy-mm-dd"
         value={value}
         onChange={handleInputChange}

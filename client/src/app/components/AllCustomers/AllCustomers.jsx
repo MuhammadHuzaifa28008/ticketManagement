@@ -44,6 +44,8 @@ function AllCustomers() {
               <SearchIcon />
             </InputAdornment>
           ),
+          inputProps: { maxLength: 20 },
+          
         }}
         autoFocus
       />

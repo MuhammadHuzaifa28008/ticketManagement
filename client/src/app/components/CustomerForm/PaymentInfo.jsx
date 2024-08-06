@@ -2,9 +2,12 @@ import { Grid, Typography, TextField, Card, CardContent } from '@mui/material';
 import { calculateInvoiceAmount } from '../../utils/paymentCalculations';
 import { useEffect, useState } from 'react';
 
-function PaymentInfo({ formData, handleInputChange }) {
+function PaymentInfo({ formData, handleInputChange, formErrors }) {
   const [invoiceAmount, setInvoiceAmount] = useState(0);
   const [errors, setErrors] = useState({ ticketPrice: '', profit: '' });
+
+
+
   useEffect(() => {
     const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
     setInvoiceAmount(newInvoiceAmount);
@@ -46,25 +49,29 @@ function PaymentInfo({ formData, handleInputChange }) {
           fullWidth
           value={formData.paymentInfo.ticketPrice || ''}
           onChange={handleInputChangeWithValidation}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2,
+            inputProps: { maxLength: 20 },
+           }}
           InputProps={{ inputProps: { min: 0 } }}
-          error={!!errors.ticketPrice}
-          helperText={errors.ticketPrice}
+          error={!!formErrors.ticketPrice}
+          helperText={formErrors.ticketPrice}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
           required
-          label="Profit"
+          label="Profit %"
+          placeholder='0%'
           name="paymentInfo.profit"
           type="number"
           fullWidth
           value={formData.paymentInfo.profit || ''}
           onChange={handleInputChangeWithValidation}
-          sx={{ mb: 2 }}
+           inputProps={{maxLength:3}}
+          
           InputProps={{ inputProps: { min: 0 } }}
-          error={!!errors.profit}
-          helperText={errors.profit}
+          error={!!formErrors.profit}
+          helperText={formErrors.profit}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
