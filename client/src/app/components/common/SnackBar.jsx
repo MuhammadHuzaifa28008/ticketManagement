@@ -1,12 +1,52 @@
 import React from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Button, IconButton, useTheme } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
-const SnackBar = ({ message, open, onClose }) => (
-  <Snackbar open={open} autoHideDuration={6000} onClose={onClose}>
-    <Alert onClose={onClose} severity={message.includes('success') ? 'success' : 'error'}>
-      {message}
-    </Alert>
-  </Snackbar>
-);
+export default function CustomSnackbar({ onCloseSB, onUNDO, openSB, severity, message }) {
+  const theme = useTheme();
 
-export default SnackBar;
+  // Determine the background color based on the severity
+  const getBackgroundColor = (severity) => {
+    switch (severity) {
+      case 'success':
+        return theme.palette.success.main;
+      case 'error':
+        return theme.palette.error.main;
+      case 'warning':
+        return theme.palette.warning.main;
+      case 'info':
+      default:
+        return theme.palette.info.main;
+    }
+  };
+
+  return (
+    <Snackbar
+      open={openSB}
+      autoHideDuration={6000}
+      onClose={onCloseSB}
+      message={message}
+      action={
+        <>
+          <Button color="inherit" size="small" onClick={onUNDO}>
+            UNDO
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={onCloseSB}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </>
+      }
+      ContentProps={{
+        sx: {
+          backgroundColor: getBackgroundColor(severity),
+          color: theme.palette.common.white,
+        },
+      }}
+    />
+  );
+}

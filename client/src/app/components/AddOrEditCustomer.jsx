@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import {
-  TextField, Button, Grid, Typography, Paper, Drawer, useTheme
-} from '@mui/material';
+import { useTheme, Button, Grid, Typography, Paper } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CustomerInfo from './CustomerForm/CustomerInfo';
 import TicketInfo from './CustomerForm/TicketInfo';
 import PaymentInfo from './CustomerForm/PaymentInfo';
 import { useAppContext } from '../context/AppContext';
 import useApiCall from '../hooks/useApiCall';
-import LoadingCircular from '../components/common/LoadingCircular';
 import SnackBar from '../components/common/SnackBar';
+import LoadingCircular from '../components/common/LoadingCircular';
 
 export default function AddOrEditCustomer() {
   const location = useLocation();
   const navigate = useNavigate();
   const customer = location.state || {};
   const theme = useTheme();
-  const { setAllCustomers } = useAppContext();
+  const { setFetch } = useAppContext();
 
   const [formData, setFormData] = useState({
     customerName: customer.customerName || '',
@@ -41,11 +39,11 @@ export default function AddOrEditCustomer() {
   });
 
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { makeApiCall } = useApiCall();
+  const { data, loading, error, makeApiCall } = useApiCall();
 
   useEffect(() => {
     if (customer) {
@@ -72,6 +70,27 @@ export default function AddOrEditCustomer() {
       });
     }
   }, [customer]);
+
+  useEffect(()=>{
+    if(data) {
+      console.log("data:", data)
+      setFetch(true)
+      setFormData(data)
+      setSnackbarMessage('data saved successfully')
+    }
+    if(loading) setIsLoading(loading)
+      if (error){ 
+        console.error("error:", error)
+        setSnackbarMessage('unable to Save Data')
+    }
+  },[data, error, loading])
+
+
+
+
+
+
+
 
   const validate = () => {
     let newErrors = {};
@@ -129,31 +148,21 @@ export default function AddOrEditCustomer() {
 
   const handleSubmit = async () => {
     if (validate()) {
-      setLoading(true);
+      setIsLoading(true);
       try {
-        let response;
-        if (formData.id !== null) {
-          // Update existing customer
-          response = await makeApiCall(`/customers/${formData.id}`, {
-            method: 'PATCH',
-            data: formData,
-          });
-        } else {
-          // Create new customer
-          response = await makeApiCall('/customers', {
-            method: 'POST',
-            data: formData,
-          });
-        }
-        setSnackbarMessage('Customer saved successfully');
-        setDrawerOpen(true);
-        setTimeout(() => navigate(-1), 2000); // Navigate back after 2 seconds
+
+        // Update existing customer
+        await makeApiCall(`http://localhost:5000/customer/${customer._id}`, {
+          method: 'put',
+          data: formData,
+        });
+
       } catch (err) {
         console.error('Error saving customer:', err);
         setSnackbarMessage('Failed to save customer. Please try again later.');
         setDrawerOpen(true);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   };
@@ -185,28 +194,24 @@ export default function AddOrEditCustomer() {
         errors={errors}
       />
       <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>
-          {loading ? <LoadingCircular /> : 'Save'}
+        <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? <LoadingCircular /> : 'Save'}
         </Button>
         <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
-          Cancel
+          Go Back
         </Button>
       </Grid>
+
+
+
       <SnackBar
         message={snackbarMessage}
-        open={!!snackbarMessage}
-        onClose={() => setSnackbarMessage('')}
+        openSB={!!snackbarMessage}
+        onCloseSB={() => setSnackbarMessage('')}
+        severity={data? "success":"error"}
       />
-      <Drawer
-        anchor="bottom"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <div style={{ width: '100%', padding: theme.spacing(2), textAlign: 'center' }}>
-          <Typography variant="h6">{snackbarMessage}</Typography>
-          <Button onClick={() => setDrawerOpen(false)}>Close</Button>
-        </div>
-      </Drawer>
+
+
     </Paper>
   );
 }

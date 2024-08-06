@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Badge, Menu, MenuItem } from '@mui/material';
+import { Box, AppBar,  Toolbar, IconButton, Typography, Badge, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'; // Icon for pending payments
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket'; // Icon for flights

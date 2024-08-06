@@ -1,9 +1,9 @@
 import React from 'react'
+import theme from './app/utils/theme.js';
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import App from './App.jsx'
-import theme from './app/utils/theme.js';
 import { AppContextProvider } from './app/context/AppContext.jsx';
 import './index.css'
 

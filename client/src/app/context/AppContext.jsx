@@ -13,7 +13,7 @@ export function useAppContext() {
 // Context provider component
 export function AppContextProvider({ children }) {
   const [allCustomers, setAllCustomers] = useState([]);
-  const [serverConn, setServerConn] = useState(true);
+  const [fetch, setFetch] = useState(true);
   const {error, data, loading, makeApiCall} = useApiCall()
 
   useEffect(() => {
@@ -26,21 +26,25 @@ export function AppContextProvider({ children }) {
         setServerConn(false);
       }
     };
-  
-    loadApp();
-  }, []);
+  if(fetch) loadApp();
+  setFetch(false)
+  }, [fetch]);
   
   useEffect(() => {
     if (data) {
       setAllCustomers(data);
-      console.log(data);
+      // console.log(data);
     }
     if (error) console.error(error);
   }, [data, error]);
+
+  // useEffect(()=>{
+
+  // })
   
 
   return (
-    <AppContext.Provider value={{ error, loading, allCustomers, setAllCustomers, serverConn }}>
+    <AppContext.Provider value={{ error, loading, allCustomers, setFetch }}>
       {children}
     </AppContext.Provider>
   );
