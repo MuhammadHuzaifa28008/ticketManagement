@@ -248,7 +248,7 @@ setChecked(true)
             return
           }
 
-          await makeApiCall(`http://localhost:5000/customer/${formData._id}`, {
+          await makeApiCall(`/customer/${formData._id}`, {
             method: 'put',
             data: formData,
           });

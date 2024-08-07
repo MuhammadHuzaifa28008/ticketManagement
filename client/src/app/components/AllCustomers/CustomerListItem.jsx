@@ -42,7 +42,7 @@ useEffect(()=>{
   const handleDelete = async () => {
     setOpenBackdrop(true);
     try {
-      await makeApiCall(`http://localhost:5000/customer/${customer._id}`, { method: 'DELETE' });
+      await makeApiCall(`/customer/${customer._id}`, { method: 'DELETE' });
 
     } catch (err) {
       setSnackbarMessage('Error deleting customer');

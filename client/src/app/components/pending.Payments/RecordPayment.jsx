@@ -36,7 +36,7 @@ const navigate = useNavigate()
 
 useEffect(()=>{
   const fetchUserData = async () => {
-    await makeApiCall(`http://localhost:5000/customer/${id}`, {
+    await makeApiCall(`/customer/${id}`, {
       method: 'get'
     });
   };
@@ -48,7 +48,7 @@ useEffect(()=>{
 
   useEffect(() => {
     const fetchUserData = async () => {
-      await makeApiCall(`http://localhost:5000/customer/${id}`, {
+      await makeApiCall(`/customer/${id}`, {
         method: 'get'
       });
     };

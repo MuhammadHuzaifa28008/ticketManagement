@@ -87,7 +87,7 @@ if (data) {
     // console.log('submit fn called')
     if(loading) // console.log('loading prev req....')
     if (paymentAmount && paymentMethod && !errors.amt && !errors.method) {
-      await makeApiCall(`http://localhost:5000/customer/${customerData._id}/paymentrecords`, {
+      await makeApiCall(`/customer/${customerData._id}/paymentrecords`, {
         method: 'post',
         data: { amt: paymentAmount, method: paymentMethod },
       });
