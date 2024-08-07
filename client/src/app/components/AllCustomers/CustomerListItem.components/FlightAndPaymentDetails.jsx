@@ -69,7 +69,7 @@ const FlightAndPaymentDetails = ({ customer }) => {
         >
           <PaymentStatusIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1), color: paymentColor }} />
           <span style={{ color: paymentColor }}>
-            {paymentStatus === 'due' ? (<>{customer.paymentInfo.dueAmount} RS </>):(<>{customer.paymentInfo.invoiceAmount} RS</>)}
+            {paymentStatus === 'due' ? (<>{customer.paymentInfo.dueAmount.toFixed(2)} RS </>):(<>{customer.paymentInfo.invoiceAmount} RS</>)}
           </span>
         </Typography>
       </Box>
