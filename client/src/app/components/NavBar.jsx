@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, AppBar, Toolbar, IconButton, Typography, Badge, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 
 const NavBar = () => {
   const theme = useTheme();
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const { allCustomers } = useAppContext();
+  const [duePayments, setDuePayments] = useState(0);
+  const [flights, setFlights] = useState(0);
+
+  useEffect(() => {
+    const today = new Date();
+    let duePaymentsCount = 0;
+    let flightsCount = 0;
+
+    allCustomers.forEach(customer => {
+      if (customer.paymentInfo.dueAmount > 0) {
+        duePaymentsCount++;
+      }
+      if (new Date(customer.ticketInfo.dateOfTraveling) >= today) {
+        flightsCount++;
+      }
+    },[allCustomers]);
+
+    setDuePayments(duePaymentsCount);
+    setFlights(flightsCount);
+  }, [allCustomers]);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -32,7 +54,7 @@ const NavBar = () => {
     >
       <MenuItem onClick={handleMobileMenuClose} component={Link} to="/payments">
         <IconButton size="large" aria-label="show pending payments" color="inherit">
-          <Badge badgeContent={4} color="error">
+          <Badge badgeContent={duePayments} color="error">
             <AttachMoneyIcon />
           </Badge>
         </IconButton>
@@ -40,7 +62,7 @@ const NavBar = () => {
       </MenuItem>
       <MenuItem onClick={handleMobileMenuClose}>
         <IconButton size="large" aria-label="show flight notifications" color="inherit">
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={flights} color="error">
             <AirplaneTicketIcon />
           </Badge>
         </IconButton>
@@ -88,7 +110,7 @@ const NavBar = () => {
               },
             }}
           >
-            <Badge badgeContent={4} color="error">
+            <Badge badgeContent={duePayments} color="error">
               <AttachMoneyIcon />
             </Badge>
           </IconButton>
@@ -103,7 +125,7 @@ const NavBar = () => {
               },
             }}
           >
-            <Badge badgeContent={17} color="error">
+            <Badge badgeContent={flights} color="error">
               <AirplaneTicketIcon />
             </Badge>
           </IconButton>

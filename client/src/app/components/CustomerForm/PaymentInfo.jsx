@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, Stack, Box, LinearProgress, CircularProgress } from '@mui/material';
-import { useTheme, useMediaQuery } from '@mui/material/styles';
+import { useTheme,  } from '@mui/material/styles';
+import {useMediaQuery} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const DuePaymentCard = ({ customer }) => {
