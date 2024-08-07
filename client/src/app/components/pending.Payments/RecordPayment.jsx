@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Container,
+  Box,
   Typography,
   Grid,
   Paper,
@@ -22,14 +22,15 @@ import { useAppContext } from '../../context/AppContext';
 const RecordPayment = () => {
   const theme = useTheme();
   const { id } = useParams();
-  const [fetchCustomer, setfechtCustomer]  = useState(false)
+  const [customer, setCustomer] = useState(null)
+  const [fetchCustomer, setFetchCustomer]  = useState(false)
   const { makeApiCall, data, error, loading } = useApiCall();
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentMethods] = useState(['Cash', 'Credit Card', 'Bank Transfer', 'EasyPaisa', 'JazzCash', 'SadaPay']);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [checked, setChecked] = useState(false);
-const {setFetch} = useAppContext()
+const {allCustomers, setFetch} = useAppContext()
 const navigate = useNavigate()
 
 
@@ -51,47 +52,48 @@ useEffect(()=>{
         method: 'get'
       });
     };
-    if(fetchCustomer) {
-      setFetch(true)
-      fetchUserData();
+
+    if(fetchCustomer){
+      // console.log('fetch customer was set to true')
+      // fetchUserData()
+      setFetch(true) 
+      setChecked(false); // show loading
     }
-    setfechtCustomer(false)
   }, [fetchCustomer]);
 
 
   useEffect(() => {
-    if (error) {
-      setSnackbarMessage(error.error);
+    if (error)  console.log(error.error);
+    if (data) {
+      setChecked(true)
+      setCustomer(data)
     }
-  }, [error]);
-
-  const handlePaymentSubmit = () => {
-    if (parseFloat(paymentAmount) > parseFloat(data.paymentInfo.dueAmount)) {
-      setSnackbarMessage('Amount cannot exceed due amount');
-      return;
+    if (loading) setChecked(false)
+  }, [error, loading,  data]);
+  
+  useEffect(()=>{
+    if(customer) {
+      // console.log('updating customer')
+      // console.log(customer.paymentInfo.paymentRecords.length); 
+      setChecked(true)
     }
+      if(!customer) setChecked(false)
+  },[fetchCustomer])
 
-    // Submit payment logic here
 
-    // On success
-    setSnackbarMessage('Payment recorded successfully');
-    
 
-    // Clear form fields
-    setPaymentAmount('');
-    setPaymentMethod('');
-  };
+
 const handleCancel = ()=>{
   // go back to prev page using react router dom
   if (!loading) navigate(-1)
 }
-  if (loading || !data) {
+  if (loading || !customer) {
     return (
-      <Container>
+      <Box>
         <Skeleton variant="text" height={40} />
         <Skeleton variant="rectangular" height={200} />
         <Skeleton variant="rectangular" height={200} />
-      </Container>
+      </Box>
     );
 }
 
@@ -101,7 +103,7 @@ const handleCancel = ()=>{
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
-              {data.customerName}
+              {customer.customerName}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -111,7 +113,7 @@ const handleCancel = ()=>{
                   Invoice Amount
                 </Typography>
                 <Typography variant="h4" color="primary.main">
-                  RS {data.paymentInfo.invoiceAmount.toFixed(2)}
+                  RS {customer.paymentInfo.invoiceAmount.toFixed(2)}
                 </Typography>
               </CardContent>
             </Card>
@@ -130,9 +132,10 @@ const handleCancel = ()=>{
           </Grid>
           <Grid item xs={12}>
             <AddPaymentRecord
-              customerData={data}
+              customerData={customer}
               paymentMethods={paymentMethods}
-              refreshCustomer={setfechtCustomer}
+              refreshCustomer={setFetchCustomer}
+              setCustomer = {setCustomer}
             />
           </Grid>
         </Grid>
@@ -144,17 +147,17 @@ const handleCancel = ()=>{
       {data.paymentInfo.paymentRecords.length > 0 && (
         <Grid Container >
           < Grid item>
-          <PaymentRecords paymentRecords={data.paymentInfo.paymentRecords} />
+          <PaymentRecords paymentRecords={customer.paymentInfo.paymentRecords} />
           </ Grid>
         </Grid>
       )}
 
-      <CustomSnackbar
+      {/* <CustomSnackbar
         message={snackbarMessage}
         openSB={!!snackbarMessage}
         onCloseSB={() => setSnackbarMessage('')}
         severity={error ? "error": 'success'}
-      />
+      /> */}
       </Paper>
     </Fade>
   );

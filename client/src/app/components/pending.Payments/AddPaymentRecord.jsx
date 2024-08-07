@@ -1,12 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, TextField, Button, MenuItem, CircularProgress } from '@mui/material';
 import useApiCall from '../../hooks/useApiCall';
+import CustomSnackbar from '../common/FeedBack/SnackBar';
 
-function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
+
+
+
+function AddPaymentRecord({ customerData, setCustomer, paymentMethods, refreshCustomer }) {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [errors, setErrors] = useState({ amt: '', method: '' });
-  const { makeApiCall, data, loading } = useApiCall();
+  const { makeApiCall, data, error, loading } = useApiCall();
+
+
+
+useEffect(()=>{
+if(loading) // console.log('saving payment in loading')
+if (error) setSnackbarMessage('unable to save payment')
+if (data) {
+  setPaymentAmount('');
+  setPaymentMethod('');
+  setSnackbarMessage('data saved successfully')
+  // console.log(data)
+  // refreshCustomer(true);
+  refreshCustomer(true)
+  setCustomer(data)
+}
+},[data, error, loading])
+
+
 
   const handleInputChangeWithValidation = (e) => {
     const { name, value } = e.target;
@@ -61,17 +84,13 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
   };
 
   const handleSubmitPayment = async () => {
+    // console.log('submit fn called')
+    if(loading) // console.log('loading prev req....')
     if (paymentAmount && paymentMethod && !errors.amt && !errors.method) {
       await makeApiCall(`http://localhost:5000/customer/${customerData._id}/paymentrecords`, {
         method: 'post',
         data: { amt: paymentAmount, method: paymentMethod },
       });
-
-      if (data) {
-        refreshCustomer(true);
-        setPaymentAmount('');
-        setPaymentMethod('');
-      }
     } else {
       if (!paymentAmount) {
         setErrors((prevErrors) => ({
@@ -85,6 +104,8 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
           method: 'Payment method is required',
         }));
       }
+
+      if (error) setSnackbarMessage('could not save data')
     }
   };
 
@@ -135,11 +156,18 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
               onClick={handleSubmitPayment}
               disabled={loading || !!errors.amt || !!errors.method}
             >
-              {loading ? <CircularProgress size={24} /> : 'Save'}
+              {loading ? <CircularProgress sx={{color:'white'}} size={24} /> : 'Save'}
             </Button>
           </Grid>
         </Grid>
       </Grid>
+
+      <CustomSnackbar
+      openSB={!!snackbarMessage}
+      message={snackbarMessage}
+      severity={data?"success": "error"}
+      onCloseSB={()=> setSnackbarMessage('')}
+      />
     </Grid>
   );
 }

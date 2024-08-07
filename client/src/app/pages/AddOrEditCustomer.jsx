@@ -15,30 +15,12 @@ import { formatDate } from '../utils/formatDate';
 export default function AddOrEditCustomer() {
   const location = useLocation();
   const navigate = useNavigate();
-  const customer = location.state || {};
+  const customer = location.state || null;
   const theme = useTheme();
   const { setFetch } = useAppContext();
   const [checked, setChecked] = React.useState(false);
   
-   const [formData, setFormData] = useState({
-    customerName: customer.customerName || '',
-    email: customer.email || '',
-    phoneNumber: customer.phoneNumber || '',
-    dob:  formatDate(customer.dob) || null,
-    ticketInfo: {
-      PNRNo: customer.ticketInfo?.PNRNo || '',
-      dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
-      dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
-    },
-    paymentInfo: {
-      ticketPrice: customer.paymentInfo?.ticketPrice || 0,
-      profit: customer.paymentInfo?.profit || 0,
-      invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
-      amountPaid: customer.paymentInfo?.amountPaid || 0,
-      dueAmount: customer.paymentInfo?.dueAmount || 0,
-    },
-    _id: customer._id || null,
-  });
+   const [formData, setFormData] = useState(!customer? null: {...customer, dob: formatDate(customer.dob), ticketInfo: {...customer.ticketInfo, dateOfTraveling: formatDate(customer.ticketInfo.dateOfTraveling), dateOfIssue:formatDate(customer.ticketInfo.dateOfIssue)}});
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -46,29 +28,32 @@ export default function AddOrEditCustomer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data, loading, error, makeApiCall } = useApiCall();
 
-  // useEffect(() => {
-  //   if (customer) {
-  //     setFormData({
-  //       customerName: customer.customerName || '',
-  //       email: customer.email || '',
-  //       phoneNumber: customer.phoneNumber || '',
-  //       dob: formatDate(customer.dob) || null,
-  //       ticketInfo: {
-  //         PNRNo: customer.ticketInfo?.PNRNo || '',
-  //         dateOfTraveling: formatDate(customer.ticketInfo?.dateOfTraveling) || null,
-  //         dateOfIssue: formatDate(customer.ticketInfo?.dateOfIssue) || null,
-  //       },
-  //       paymentInfo: {
-  //         ticketPrice: customer.paymentInfo?.ticketPrice || 0,
-  //         profit: customer.paymentInfo?.profit || 0,
-  //         invoiceAmount: customer.paymentInfo?.invoiceAmount || 0,
-  //         amountPaid: customer.paymentInfo?.amountPaid || 0,
-  //         dueAmount: customer.paymentInfo?.dueAmount || 0,
-  //       },
-  //       _id: customer._id || null,
-  //     });
-  //   }
-  // }, [customer]);
+  useEffect(() => {
+    if (!customer) {
+      console.warn('no state was passsed')
+      setFormData({
+        customerName:  '',
+        email: '',
+        phoneNumber: '',
+        dob: null,
+        ticketInfo: {
+          PNRNo:  '',
+          dateOfTraveling:  '',
+          dateOfIssue:  '',
+        },
+        paymentInfo: {
+          ticketPrice:  0,
+          profit:  0,
+          invoiceAmount:  0,
+          amountPaid:  0,
+          dueAmount: 0,
+        },
+      });
+    }
+  }, []);
+
+
+
 
 useEffect(()=>{
   if (Object.keys(errors).length >0 ) console.log(errors)
@@ -80,7 +65,7 @@ setChecked(true)
 
   useEffect(()=>{
     if(data) {
-      console.log("data:", data)
+      // console.log("data:", data)
       setFetch(true)
       setFormData(data)
       setSnackbarMessage('data saved successfully')
@@ -256,10 +241,10 @@ setChecked(true)
     if (validate()) {
       setIsLoading(true);
       try {
-        if(customer.customerName){
+        if(customer){
 
           // Update existing customer
-          if(!formData._id) {console.error('id is null in form data aborting'); 
+          if(!formData._id) {console.error('id is null in form data | update aborting'); 
             return
           }
 
@@ -290,10 +275,10 @@ setChecked(true)
 
     <Paper sx={{ maxWidth: '100%', boxSizing: 'border-box', padding: theme.spacing(3) }}>
       <Typography variant="h1" gutterBottom>
-        {formData.customerName ? 'Edit Customer' : 'Add Customer'}
+        {formData ? 'Edit Customer' : 'Add Customer'}
       </Typography>
-      <CTakeustomerInfo
-        formData={formData}
+      <TakeCustomerInfo
+        formData={customer? formData: null}
         handleInputChange={handleInputChange}
         handleDateChange={handleDateChange}
         errors={errors}

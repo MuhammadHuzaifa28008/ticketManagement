@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Typography, Box, Card, CardContent, useTheme, Grid } from '@mui/material';
-5
+
 
 
 
@@ -42,7 +42,9 @@ function PaymentRecord({ paymentRecord }) {
 function PaymentRecords({ paymentRecords }) {
   // Sort payment records by date in descending order
   const sortedRecords = [...paymentRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
-
+useEffect(()=>{
+  // console.log('payment records are updating')
+},[paymentRecords])
   return (
     <Box sx={{ mt: 2 }}>
       <Typography variant="h5" gutterBottom>

@@ -19,16 +19,18 @@ export function AppContextProvider({ children }) {
   useEffect(() => {
     const loadApp = async () => {
       try {
-        console.log('making api call')
         makeApiCall('http://localhost:5000/customer/all');
       } catch (error) {
-        console.error('Error loading app data:', error);
+        // console.error('Error loading app data:', error);
         setServerConn(false);
       }
     };
-  if(fetch) loadApp();
+  if(fetch) {
+    console.log('loading context data')
+    loadApp()
+  }
   setFetch(false)
-  }, [fetch]);
+  }, [fetch, setFetch]);
   
   useEffect(() => {
     if (data) {
@@ -38,9 +40,7 @@ export function AppContextProvider({ children }) {
     if (error) console.error(error);
   }, [data, error]);
 
-  // useEffect(()=>{
-
-  // })
+  
   
 
   return (

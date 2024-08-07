@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, TextField } from '@mui/material';
 import DateInput from '../common/inputs/DateInput';
 import {formatDate} from '../../utils/formatDate';
@@ -8,6 +8,14 @@ import {formatDate} from '../../utils/formatDate';
 
 
 function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
+const [customerName, setCustomerName]  = useState(formData? formData.customerName : '')
+const [email, setEmail]  = useState(formData? formData.email : '')
+const [dob, setDOB]  = useState(formData? formData.dob : '')
+useEffect(()=>{
+console.log(formData)
+},[formData])
+
+
   return (
     <Grid container spacing={2} mt={2}>
       <Grid item xs={12} sm={6} md={6}>
@@ -19,7 +27,7 @@ function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, error
           label="Customer Name"
           name="customerName"
           fullWidth
-          value={formData.customerName}
+          value={customerName}
           onChange={handleInputChange}
           error={!!errors.customerName}
           helperText={errors.customerName}

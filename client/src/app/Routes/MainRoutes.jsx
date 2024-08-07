@@ -14,6 +14,7 @@ function MainRoutes() {
       <Route exact path='/add-or-edit-customer-data' element={<AddOrEditCustomer />} />
       <Route exact path='/payments' element={<PendingPayments />} />
       <Route exact path='/recordpayment/:id' element={<RecordPayment />} />
+      <Route  path='*' element={<Home />} />
     </Routes>
   );
 }
