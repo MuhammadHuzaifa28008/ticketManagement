@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -19,8 +19,6 @@ import PaymentRecords from '../PaymentRecords';
 import AddPaymentRecord from './AddPaymentRecord';
 import { useAppContext } from '../../context/AppContext';
 
-
-
 const RecordPayment = () => {
   const theme = useTheme();
   const { id } = useParams();
@@ -32,6 +30,7 @@ const RecordPayment = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [checked, setChecked] = useState(false);
 const {setFetch} = useAppContext()
+const navigate = useNavigate()
 
 
 useEffect(()=>{
@@ -84,6 +83,7 @@ useEffect(()=>{
   };
 const handleCancel = ()=>{
   // go back to prev page using react router dom
+  if (!loading) navigate(-1)
 }
   if (loading || !data) {
     return (

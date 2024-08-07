@@ -57,19 +57,24 @@ const updateCustomerById = async (id, updateData) => {
   };
   
 
-
-
-
-
 // Helper function to delete a customer by ID
 const deleteCustomerById = async (id) => {
   return await Customer.findByIdAndDelete(id);
 };
 
+
+
+
+
+
+
 // Helper function to add a payment record
 const addPaymentRecordById = async (customerId, paymentRecord) => {
   const customer = await Customer.findById(customerId);
   if (!customer) throw new Error('Customer not found.');
+
+  // Add current timestamp in UTC+5:00 to paymentRecord.time
+  paymentRecord.date = moment().tz('Asia/Karachi').format('YYYY-MM-DDTHH:mm:ssZ'); // Asia/Karachi is UTC+5:00
 
   // Update dueAmount
   customer.paymentInfo.dueAmount -= paymentRecord.amt;
@@ -77,6 +82,8 @@ const addPaymentRecordById = async (customerId, paymentRecord) => {
 
   return await customer.save();
 };
+
+
 
 // Helper function to delete a payment record by customer ID and record ID
 const deletePaymentRecordById = async (customerId, recordId) => {

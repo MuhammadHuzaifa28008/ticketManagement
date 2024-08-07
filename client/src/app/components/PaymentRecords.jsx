@@ -1,5 +1,8 @@
 import React from 'react';
-import { Typography, Box, Card, CardContent, useTheme } from '@mui/material';
+import { Typography, Box, Card, CardContent, useTheme, Grid } from '@mui/material';
+5
+
+
 
 // Function to format date in a readable format
 const formatDateReadable = (date) => {
@@ -17,32 +20,20 @@ function PaymentRecord({ paymentRecord }) {
         mb: 2,
         background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
         color: theme.palette.common.white,
-        '@media (max-width:600px)': {
-          flexDirection: 'column',
-        }
       }}
     >
       <CardContent>
-        <Box 
-          display="flex" 
-          flexDirection="row" 
-          justifyContent="space-between" 
-          flexWrap="wrap" 
-          mb={1}
-        >
-          <Box flex={1} textAlign="center">
-            {/* <Typography variant="h6">Amount</Typography> */}
+        <Grid container spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+          <Grid item xs={12} sm={4} textAlign="center">
             <Typography variant="h4">RS {paymentRecord.amt.toFixed(2)}</Typography>
-          </Box>
-          <Box flex={1} textAlign="center">
-            {/* <Typography variant="h6">Method</Typography> */}
+          </Grid>
+          <Grid item xs={12} sm={4} textAlign="center">
             <Typography variant="h4">{paymentRecord.method}</Typography>
-          </Box>
-          <Box flex={1} textAlign="center">
-            {/* <Typography variant="h6">Time</Typography> */}
+          </Grid>
+          <Grid item xs={12} sm={4} textAlign="center">
             <Typography variant="h4">{formatDateReadable(paymentRecord.date)}</Typography>
-          </Box>
-        </Box>
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   );
