@@ -28,9 +28,9 @@ export default function CustomSnackbar({ onCloseSB, onUNDO, openSB, severity, me
       message={message}
       action={
         <>
-          <Button color="inherit" size="small" onClick={onUNDO}>
+          {/* <Button color="inherit" size="small" onClick={onUNDO}>
             UNDO
-          </Button>
+          </Button> */}
           <IconButton
             size="small"
             aria-label="close"

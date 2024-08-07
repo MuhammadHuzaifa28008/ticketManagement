@@ -17,17 +17,34 @@ import LoadingBackdrop from '../common/FeedBack/LoadingBackDrop';
 import CustomSnackbar from '../common/FeedBack/SnackBar';
 import PaymentRecords from '../PaymentRecords';
 import AddPaymentRecord from './AddPaymentRecord';
+import { useAppContext } from '../../context/AppContext';
+
+
 
 const RecordPayment = () => {
   const theme = useTheme();
   const { id } = useParams();
+  const [fetchCustomer, setfechtCustomer]  = useState(false)
   const { makeApiCall, data, error, loading } = useApiCall();
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [paymentMethods] = useState(['Cash', 'Credit Card', 'Bank Transfer']); // Static list for demo
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [paymentMethods] = useState(['Cash', 'Credit Card', 'Bank Transfer', 'EasyPaisa', 'JazzCash', 'SadaPay']);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [checked, setChecked] = useState(false);
+const {setFetch} = useAppContext()
+
+
+useEffect(()=>{
+  const fetchUserData = async () => {
+    await makeApiCall(`http://localhost:5000/customer/${id}`, {
+      method: 'get'
+    });
+  };
+  fetchUserData()
+  setChecked(true);
+},[])
+
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,25 +52,23 @@ const RecordPayment = () => {
         method: 'get'
       });
     };
-    
-    fetchUserData();
-  }, [id, makeApiCall]);
+    if(fetchCustomer) {
+      setFetch(true)
+      fetchUserData();
+    }
+    setfechtCustomer(false)
+  }, [fetchCustomer]);
 
-  useEffect(()=>{
-    setChecked(true);
-  },[])
 
   useEffect(() => {
     if (error) {
       setSnackbarMessage(error.error);
-      setSnackbarOpen(true);
     }
   }, [error]);
 
   const handlePaymentSubmit = () => {
     if (parseFloat(paymentAmount) > parseFloat(data.paymentInfo.dueAmount)) {
       setSnackbarMessage('Amount cannot exceed due amount');
-      setSnackbarOpen(true);
       return;
     }
 
@@ -61,7 +76,7 @@ const RecordPayment = () => {
 
     // On success
     setSnackbarMessage('Payment recorded successfully');
-    setSnackbarOpen(true);
+    
 
     // Clear form fields
     setPaymentAmount('');
@@ -78,7 +93,7 @@ const handleCancel = ()=>{
         <Skeleton variant="rectangular" height={200} />
       </Container>
     );
-  }
+}
 
   return (
     <Fade in={checked} timeout={500}>
@@ -116,16 +131,16 @@ const handleCancel = ()=>{
           <Grid item xs={12}>
             <AddPaymentRecord
               customerData={data}
-              handleAmountChange={(e) => setPaymentAmount(e.target.value)}
-              handleSubmit={handlePaymentSubmit}
-              handleCancel={() => {
-                setPaymentAmount('');
-                setPaymentMethod('');
-              }}
-              paymentAmount={paymentAmount}
-              paymentMethod={paymentMethod}
+              // handleAmountChange={(e) => setPaymentAmount(e.target.value)}
+              // handleSubmit={handlePaymentSubmit}
+              // handleCancel={() => {
+              //   setPaymentAmount('');
+              //   setPaymentMethod('');
+              // }}
+              // paymentAmount={paymentAmount}
+              // paymentMethod={paymentMethod}
               paymentMethods={paymentMethods}
-              isLoading={loading}
+              // isLoading={loading}
             />
           </Grid>
         </Grid>
@@ -141,9 +156,10 @@ const handleCancel = ()=>{
       )}
 
       <CustomSnackbar
-        open={snackbarOpen}
         message={snackbarMessage}
-        onClose={() => setSnackbarOpen(false)}
+        openSB={!!snackbarMessage}
+        onCloseSB={() => setSnackbarMessage('')}
+        severity={error ? "error": 'success'}
       />
       </Paper>
     </Fade>

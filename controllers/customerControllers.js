@@ -81,7 +81,7 @@ const createCustomer = async (req, res) => {
       const customerId = req.params.customerId;
       const paymentRecord = req.body;
       const updatedCustomer = await addPaymentRecordById(customerId, paymentRecord);
-      res.json(updatedCustomer);
+      res.status(200).json(updatedCustomer);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
