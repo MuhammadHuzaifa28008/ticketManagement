@@ -98,4 +98,4 @@ const createCustomer = async (req, res) => {
     }
   };
   
-  module.exports = {getAllCustomers, createCustomer, updateCustomer, deleteCustomer, addPaymentRecord, deletePaymentRecord };
+  module.exports = { getAllCustomers, getCustomer, createCustomer, updateCustomer, deleteCustomer, addPaymentRecord, deletePaymentRecord };

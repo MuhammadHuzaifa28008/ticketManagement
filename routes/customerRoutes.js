@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getAllCustomers,
+  getCustomer,
   createCustomer,
   updateCustomer,
   deleteCustomer,
@@ -11,6 +12,9 @@ const {
 
 // Route for Getting all customers
 router.get('/all', getAllCustomers);
+
+// Route for getting single customer
+router.get('/:id', getCustomer)
 
 // Route for creating a customer
 router.post('/add', createCustomer);
