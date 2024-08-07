@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme, Button, Grid, Typography, Paper, Fade } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import CustomerInfo from '../components/CustomerForm/CustomerInfo';
-import TicketInfo from '../components/CustomerForm/TicketInfo';
-import PaymentInfo from '../components/CustomerForm/PaymentInfo';
+import TakeCustomerInfo from '../components/CustomerForm/TakeCustomerInfo';
+import TakeTicketInfo from '../components/CustomerForm/TakeTicketInfo';
+import TakePaymentInfo from '../components/CustomerForm/TakePaymentInfo';
 import { useAppContext } from '../context/AppContext';
 import useApiCall from '../hooks/useApiCall';
 import SnackBar from '../components/common/FeedBack/SnackBar';
@@ -290,19 +290,19 @@ setChecked(true)
       <Typography variant="h1" gutterBottom>
         {formData.customerName ? 'Edit Customer' : 'Add Customer'}
       </Typography>
-      <CustomerInfo
+      <CTakeustomerInfo
         formData={formData}
         handleInputChange={handleInputChange}
         handleDateChange={handleDateChange}
         errors={errors}
       />
-      <TicketInfo
+      <TakeTicketInfo
         formData={formData}
         handleInputChange={handleInputChange}
         handleDateChange={handleDateChange}
         errors={errors}
       />
-      <PaymentInfo
+      <TakePaymentInfo
         formData={formData}
         handleInputChange={handleInputChange}
         formErrors={errors}
@@ -330,6 +330,3 @@ setChecked(true)
     </Fade>
   )
 };
-
-
-

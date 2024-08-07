@@ -4,7 +4,7 @@ import {formatDate} from '../../utils/formatDate';
 
 
 
-function TicketInfo({ formData, handleInputChange, handleDateChange, errors }) {
+function TakeTicketInfo({ formData, handleInputChange, handleDateChange, errors }) {
   return (
     <Grid container spacing={2} mt={5}>
       <Grid item xs={12} sm={6} md={6} order={{ xs: 1, md: 1 }}>
@@ -52,4 +52,4 @@ function TicketInfo({ formData, handleInputChange, handleDateChange, errors }) {
   );
 }
 
-export default TicketInfo;
+export default TakeTicketInfo;

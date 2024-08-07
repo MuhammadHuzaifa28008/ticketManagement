@@ -7,7 +7,7 @@ import {formatDate} from '../../utils/formatDate';
 
 
 
-function CustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
+function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
   return (
     <Grid container spacing={2} mt={2}>
       <Grid item xs={12} sm={6} md={6}>
@@ -75,4 +75,4 @@ function CustomerInfo({ formData, handleInputChange, handleDateChange, errors })
   );
 }
 
-export default CustomerInfo;
+export default TakeCustomerInfo;

@@ -3,21 +3,20 @@ import { useParams } from 'react-router-dom';
 import {
   Container,
   Typography,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Divider,
-  CircularProgress,
+  Grid,
   Paper,
   useTheme,
+  Card,
+  CardContent,
+  Skeleton,
+  Fade,
+  Button
 } from '@mui/material';
 import useApiCall from '../../hooks/useApiCall';
 import LoadingBackdrop from '../common/FeedBack/LoadingBackDrop';
 import CustomSnackbar from '../common/FeedBack/SnackBar';
-import { formatDateReadable } from '../../utils/formatDate';
+import PaymentRecords from '../PaymentRecords';
+import AddPaymentRecord from './AddPaymentRecord';
 
 const RecordPayment = () => {
   const theme = useTheme();
@@ -25,10 +24,10 @@ const RecordPayment = () => {
   const { makeApiCall, data, error, loading } = useApiCall();
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [paymentMethods, setPaymentMethods] = useState(['Cash', 'Credit Card', 'Bank Transfer']); // Static list for demo
+  const [paymentMethods] = useState(['Cash', 'Credit Card', 'Bank Transfer']); // Static list for demo
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [previousPayments, setPreviousPayments] = useState([]);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -38,14 +37,18 @@ const RecordPayment = () => {
     };
     
     fetchUserData();
-  }, []);
+  }, [id, makeApiCall]);
+
+  useEffect(()=>{
+    setChecked(true);
+  },[])
 
   useEffect(() => {
-    if (data) {
-      setPreviousPayments(data.paymentInfo.paymentRecords || []);
+    if (error) {
+      setSnackbarMessage(error.error);
+      setSnackbarOpen(true);
     }
-    if(error) setSnackbarMessage(error.error)
-  }, [data, loading, error]);
+  }, [error]);
 
   const handlePaymentSubmit = () => {
     if (parseFloat(paymentAmount) > parseFloat(data.paymentInfo.dueAmount)) {
@@ -64,91 +67,86 @@ const RecordPayment = () => {
     setPaymentAmount('');
     setPaymentMethod('');
   };
-
-  if (loading) return <LoadingBackdrop open={loading} />;
-  if (error) return <Typography color="error">Error fetching data</Typography>;
+const handleCancel = ()=>{
+  // go back to prev page using react router dom
+}
+  if (loading || !data) {
+    return (
+      <Container>
+        <Skeleton variant="text" height={40} />
+        <Skeleton variant="rectangular" height={200} />
+        <Skeleton variant="rectangular" height={200} />
+      </Container>
+    );
+  }
 
   return (
-    <Container sx={{ paddingY: 4 }}>
-      <Paper sx={{ padding: 3, marginBottom: 4, backgroundColor: theme.palette.background.paper }}>
-        <Typography variant="h1" color="text.primary" fontSize={'5rem'}>
-    {data?.customerName}
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Due Amount: ${data?.paymentInfo.dueAmount}
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Invoice Amount: ${data?.paymentInfo.invoiceAmount}
-        </Typography>
-      </Paper>
-      <Box sx={{ marginBottom: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Previous Payments
-        </Typography>
-        <List>
-          {previousPayments.length > 0 &&
-            previousPayments.map((payment, index) => (
-              <React.Fragment key={index}>
-                <ListItem>
-                  <ListItemText
-                    primary={`Amount: $${payment.amount.toFixed(2)}`}
-                    secondary={`Method: ${payment.method} | Time: ${formatDateReadable(payment.time)}`}
-                  />
-                </ListItem>
-                {index < previousPayments.length - 1 && <Divider />}
-              </React.Fragment>
-            ))
-          }
-        </List>
-      </Box>
-
-      <Paper sx={{ padding: 3, backgroundColor: theme.palette.background.paper }}>
-        <Typography variant="h5" gutterBottom>
-          Record New Payment
-        </Typography>
-        <TextField
-          label="Amount"
-          type="number"
-          value={paymentAmount}
-          onChange={(e) => setPaymentAmount(e.target.value)}
-          fullWidth
-          margin="normal"
-          sx={{ marginBottom: 2 }}
-          InputProps={{ startAdornment: <Box sx={{ mr: 1 }}>RS</Box> }}
-        />
-        <TextField
-          label="Payment Method"
-          select
-          value={paymentMethod}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-          fullWidth
-          margin="normal"
-          SelectProps={{ native: true }}
-        >
-          {paymentMethods.map((method, index) => (
-            <option key={index} value={method}>
-              {method}
-            </option>
-          ))}
-        </TextField>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handlePaymentSubmit}
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Record Payment
-        </Button>
-      </Paper>
+    <Fade in={checked} timeout={500}>
+      <Paper sx={{ maxWidth: '100%', padding: theme.spacing(3) }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              {data.customerName}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card variant="outlined" sx={{ bgcolor: 'background.paper', borderColor: 'primary.main' }}>
+              <CardContent>
+                <Typography variant="h6" color="text.primary">
+                  Invoice Amount
+                </Typography>
+                <Typography variant="h4" color="primary.main">
+                  RS {data.paymentInfo.invoiceAmount.toFixed(2)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card variant="outlined" sx={{ bgcolor: 'background.paper', borderColor: 'primary.main' }}>
+              <CardContent>
+                <Typography variant="h6" color="text.primary">
+                  Due Amount
+                </Typography>
+                <Typography variant="h4" color="primary.main">
+                  RS {data.paymentInfo.dueAmount.toFixed(2)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <AddPaymentRecord
+              customerData={data}
+              handleAmountChange={(e) => setPaymentAmount(e.target.value)}
+              handleSubmit={handlePaymentSubmit}
+              handleCancel={() => {
+                setPaymentAmount('');
+                setPaymentMethod('');
+              }}
+              paymentAmount={paymentAmount}
+              paymentMethod={paymentMethod}
+              paymentMethods={paymentMethods}
+              isLoading={loading}
+            />
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Button variant="outlined" color="secondary" onClick={handleCancel}>
+          Go Back
+              </Button>
+                    </Grid>  
+      {data.paymentInfo.paymentRecords.length > 0 && (
+        <Grid Container xs={12}>
+          <PaymentRecords paymentRecords={data.paymentInfo.paymentRecords} />
+        </Grid>
+      )}
 
       <CustomSnackbar
-        openSB={!! snackbarMessage}
+        open={snackbarOpen}
         message={snackbarMessage}
-        onCloseSB={() => setSnackbarMessage('')}
-        severity={data?'success': error? 'error': 'warning'}
+        onClose={() => setSnackbarOpen(false)}
       />
-    </Container>
+      </Paper>
+    </Fade>
   );
 };
 
