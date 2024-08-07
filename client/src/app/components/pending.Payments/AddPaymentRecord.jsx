@@ -10,12 +10,28 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
 
   const handleInputChangeWithValidation = (e) => {
     const { name, value } = e.target;
+  
+    // Check if the value is a valid number
+    const numericValue = parseFloat(value);
+  
     if (name === 'amt') {
       const dueAmount = customerData.paymentInfo.dueAmount;
-      if (parseFloat(value) > dueAmount) {
+  
+      // Check if the value is a valid number and not an empty string
+      if (isNaN(numericValue) || value.trim() === '' || !/^\d+(\.\d+)?$/.test(value)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          amt: 'Please enter a valid amount',
+        }));
+      } else if (numericValue > dueAmount) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           amt: `Amount cannot be more than RS ${dueAmount}`,
+        }));
+      } else if (numericValue <= 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          amt: 'Amount must be greater than zero',
         }));
       } else {
         setErrors((prevErrors) => ({
@@ -24,8 +40,10 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
         }));
       }
     }
+  
     setPaymentAmount(value);
   };
+  
 
   const handleMethodChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -46,7 +64,7 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
     if (paymentAmount && paymentMethod && !errors.amt && !errors.method) {
       await makeApiCall(`http://localhost:5000/customer/${customerData._id}/paymentrecords`, {
         method: 'post',
-        data: { amount: paymentAmount, method: paymentMethod },
+        data: { amt: paymentAmount, method: paymentMethod },
       });
 
       if (data) {
@@ -80,12 +98,12 @@ function AddPaymentRecord({ customerData, paymentMethods, refreshCustomer }) {
           required
           label="Amount"
           name="amt"
-          type="number"
+          type="text"
           fullWidth
           value={paymentAmount}
           onChange={handleInputChangeWithValidation}
           sx={{ mb: 2 }}
-          inputProps={{ maxLength: 10, min: 0 }}
+          inputProps={{ maxLength: 10, min: 5}}
           error={!!errors.amt}
           helperText={errors.amt}
         />

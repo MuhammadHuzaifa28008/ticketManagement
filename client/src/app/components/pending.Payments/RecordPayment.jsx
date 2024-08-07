@@ -131,16 +131,8 @@ const handleCancel = ()=>{
           <Grid item xs={12}>
             <AddPaymentRecord
               customerData={data}
-              // handleAmountChange={(e) => setPaymentAmount(e.target.value)}
-              // handleSubmit={handlePaymentSubmit}
-              // handleCancel={() => {
-              //   setPaymentAmount('');
-              //   setPaymentMethod('');
-              // }}
-              // paymentAmount={paymentAmount}
-              // paymentMethod={paymentMethod}
               paymentMethods={paymentMethods}
-              // isLoading={loading}
+              refreshCustomer={setfechtCustomer}
             />
           </Grid>
         </Grid>
@@ -148,10 +140,12 @@ const handleCancel = ()=>{
           <Button variant="outlined" color="secondary" onClick={handleCancel}>
           Go Back
               </Button>
-                    </Grid>  
+          </Grid>  
       {data.paymentInfo.paymentRecords.length > 0 && (
-        <Grid Container xs={12}>
+        <Grid Container >
+          < Grid item>
           <PaymentRecords paymentRecords={data.paymentInfo.paymentRecords} />
+          </ Grid>
         </Grid>
       )}
 
