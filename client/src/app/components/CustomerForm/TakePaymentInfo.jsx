@@ -9,11 +9,12 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
 
 
   useEffect(() => {
+    if(!formData) return
     const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
     setInvoiceAmount(newInvoiceAmount);
     // Update the form data with the new invoice amount
     handleInputChange({ target: { name: 'paymentInfo.invoiceAmount', value: newInvoiceAmount } });
-  }, [formData.paymentInfo.ticketPrice, formData.paymentInfo.profit]);
+  }, [formData]);
 
   const validateInput = (name, value) => {
     let error = '';
@@ -47,7 +48,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
           name="paymentInfo.ticketPrice"
           type="text"
           fullWidth
-          value={formData.paymentInfo.ticketPrice || ''}
+          value={formData ? formData.paymentInfo.ticketPrice : ''}
           onChange={handleInputChangeWithValidation}
           sx={{ mb: 2,
            }}
@@ -65,7 +66,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
           name="paymentInfo.profit"
           type="text"
           fullWidth
-          value={formData.paymentInfo.profit || ''}
+          value={formData? formData.paymentInfo.profit : ''}
           onChange={handleInputChangeWithValidation}
           // InputProps={{ inputProps: { min: 0 } }}
           inputProps={{maxLength:3, min:0}} 
@@ -80,7 +81,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
               Invoice Amount
             </Typography>
             <Typography variant="h4" color="primary.main">
-              RS {formData.paymentInfo.invoiceAmount.toFixed(2)}
+              RS {formData? formData.paymentInfo.invoiceAmount.toFixed(2) : invoiceAmount}
             </Typography>
           </CardContent>
         </Card>

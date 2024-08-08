@@ -8,12 +8,10 @@ import {formatDate} from '../../utils/formatDate';
 
 
 function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
-const [customerName, setCustomerName]  = useState(formData? formData.customerName : '')
-const [email, setEmail]  = useState(formData? formData.email : '')
-const [dob, setDOB]  = useState(formData? formData.dob : '')
-useEffect(()=>{
-console.log(formData)
-},[formData])
+
+  // useEffect(()=>{
+// // console.log(formData)
+// },[formData])
 
 
   return (
@@ -27,7 +25,7 @@ console.log(formData)
           label="Customer Name"
           name="customerName"
           fullWidth
-          value={customerName}
+          value={formData? formData.customerName : ''}
           onChange={handleInputChange}
           error={!!errors.customerName}
           helperText={errors.customerName}
@@ -41,7 +39,7 @@ console.log(formData)
           label="Email"
           name="email"
           fullWidth
-          value={formData.email}
+          value={formData? formData.email : ''}
           onChange={handleInputChange}
           sx={{ mb: 2,
            }}
@@ -55,7 +53,7 @@ console.log(formData)
           name="phoneNumber"
           type='tel'
           fullWidth
-          value={formData.phoneNumber}
+          value={formData ? formData.phoneNumber : ''}
           onChange={handleInputChange}
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber}
@@ -72,7 +70,7 @@ console.log(formData)
           title="Date of Birth"
           name="dob"
           type="date"
-          value={formData.dob}
+          value={formData ? formData.dob : ''}
           required={true}
           onChange={handleDateChange}
           error={errors.dob}

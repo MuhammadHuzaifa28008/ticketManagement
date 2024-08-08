@@ -32,10 +32,10 @@ export default function AddOrEditCustomer() {
     if (!customer) {
       console.warn('no state was passsed')
       setFormData({
-        customerName:  '',
-        email: '',
-        phoneNumber: '',
-        dob: null,
+        customerName:  'placeholder name',
+        email: 'email',
+        phoneNumber: '02121',
+        dob: '',
         ticketInfo: {
           PNRNo:  '',
           dateOfTraveling:  '',
@@ -44,9 +44,7 @@ export default function AddOrEditCustomer() {
         paymentInfo: {
           ticketPrice:  0,
           profit:  0,
-          invoiceAmount:  0,
-          amountPaid:  0,
-          dueAmount: 0,
+          invoiceAmount:  0
         },
       });
     }
@@ -135,7 +133,7 @@ setChecked(true)
     if (!formData.paymentInfo.ticketPrice) newErrors.ticketPrice = 'Ticket Price is required';
     if (!formData.paymentInfo.profit) newErrors.profit = 'Profit is required';
     if (!formData.paymentInfo.invoiceAmount) newErrors.invoiceAmount = 'Invoice Amount is required';
-    if (!formData.paymentInfo.amountPaid) newErrors.amountPaid = 'Amount Paid is required';
+    // if (!formData.paymentInfo.amountPaid) newErrors.amountPaid = 'Amount Paid is required';
   
     // Validate Date of Birth
     if (formData.dob) {
@@ -248,7 +246,7 @@ setChecked(true)
             return
           }
 
-          await makeApiCall(`/customer/${formData._id}`, {
+          await makeApiCall(`http://localhost:5000/customer/${formData._id}`, {
             method: 'put',
             data: formData,
           });
@@ -275,7 +273,7 @@ setChecked(true)
 
     <Paper sx={{ maxWidth: '100%', boxSizing: 'border-box', padding: theme.spacing(3) }}>
       <Typography variant="h1" gutterBottom>
-        {formData ? 'Edit Customer' : 'Add Customer'}
+        {customer ? 'Edit Customer' : 'Add Customer'}
       </Typography>
       <TakeCustomerInfo
         formData={customer? formData: null}

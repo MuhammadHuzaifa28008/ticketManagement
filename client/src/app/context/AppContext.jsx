@@ -19,7 +19,7 @@ export function AppContextProvider({ children }) {
   useEffect(() => {
     const loadApp = async () => {
       try {
-        makeApiCall('/customer/all');
+        makeApiCall('http://localhost:5000/customer/all');
       } catch (error) {
         // console.error('Error loading app data:', error);
         setServerConn(false);
