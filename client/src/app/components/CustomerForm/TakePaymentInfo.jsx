@@ -12,16 +12,16 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
 
   useEffect(() => {
     if(!formData) {
-      handleInputChange({target:{name:'paymentInfo.AmountPaid', value: 0}})
-      handleInputChange({target:{name:'paymentInfo.dueAmount', value: newInvoiceAmount}})
+      
       return
+    }else{
+      const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
+      setInvoiceAmount(newInvoiceAmount);
+      const newDueAmount = calculateDueAmount(formData.paymentInfo.amountPaid, newInvoiceAmount)
+      handleInputChange({ target: { name: 'paymentInfo.invoiceAmount', value: newInvoiceAmount } });
+      handleInputChange({target:{name:'paymentInfo.dueAmount', value: newDueAmount}})
     }
-    const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
-    setInvoiceAmount(newInvoiceAmount);
-    const newDueAmount = calculateDueAmount(formData.paymentInfo.amountPaid, newInvoiceAmount)
     // Update the form data with the new invoice amount
-    handleInputChange({ target: { name: 'paymentInfo.invoiceAmount', value: newInvoiceAmount } });
-    handleInputChange({target:{name:'paymentInfo.dueAmount', value: newDueAmount}})
   }, [formData]);
 
   const validateInput = (name, value) => {

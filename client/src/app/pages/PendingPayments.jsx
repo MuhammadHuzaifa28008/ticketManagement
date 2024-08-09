@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
 import { useAppContext } from '../context/AppContext';
 import DuePaymentCard from '../components/pending.Payments/DuePaymentCard';
@@ -11,6 +11,9 @@ const PendingPayments = () => {
   const customersWithDue = allCustomers.filter(
     (customer) => customer.paymentInfo.dueAmount > 0
   );
+useEffect(()=>{
+console.log('updating due payments with context')
+},[allCustomers])
 
   return (
     <Container>

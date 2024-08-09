@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-const data = require("./dummy.json")
-const Customer = require('../db/models/Customer.model')
-const dotenv = require('dotenv')
-const path = require('path')
+const data = require("./dummy.json");
+const Customer = require('../db/models/Customer.model');
+const dotenv = require('dotenv');
+const path = require('path');
 
-dotenv.config({path: './config/.env'});
+dotenv.config({ path: './config/.env' });
 
 // MongoDB connection logic
-const mongoURI = process.env.dbURI; // Replace with your actual MongoDB URI
+const mongoURI = process.env.dbURI;
 
 mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected...'))
@@ -15,20 +15,27 @@ mongoose.connect(mongoURI)
 
 // Function to recalculate and set payment values
 const recalculatePaymentInfo = (customer) => {
-  const { ticketPrice, profit, amountPaid } = customer.paymentInfo;
-  
-  // Calculate the invoice amount
-  const invoiceAmount = ticketPrice+( ticketPrice * (profit / 100));
+  let { ticketPrice, profit, amountPaid } = customer.paymentInfo;
+
+  // Round ticketPrice and profit to the nearest integer
+  ticketPrice = Math.round(ticketPrice);
+  profit = Math.round(profit);
+
+  // Calculate the invoice amount and round it to the nearest integer
+  const invoiceAmount = Math.round(ticketPrice + (ticketPrice * (profit / 100)));
   customer.paymentInfo.invoiceAmount = invoiceAmount;
-  
-  // Ensure amountPaid is not greater than invoiceAmount
+
+  // Ensure amountPaid is not greater than invoiceAmount and round it to the nearest integer
   if (amountPaid > invoiceAmount) {
-    customer.paymentInfo.amountPaid = Math.random() * invoiceAmount;
+    amountPaid = Math.round(Math.random() * invoiceAmount);
+  } else {
+    amountPaid = Math.round(amountPaid);
   }
-  
-  // Calculate the due amount
-  customer.paymentInfo.dueAmount = invoiceAmount - customer.paymentInfo.amountPaid;
-  
+  customer.paymentInfo.amountPaid = amountPaid;
+
+  // Calculate the due amount and round it to the nearest integer
+  customer.paymentInfo.dueAmount = Math.round(invoiceAmount - amountPaid);
+
   return customer;
 };
 
@@ -44,7 +51,6 @@ const insertData = async () => {
     const processedData = data.map(recalculatePaymentInfo);
 
     // Insert data
-    console.log(processedData)
     await Customer.insertMany(processedData);
 
     console.log('Data inserted successfully');

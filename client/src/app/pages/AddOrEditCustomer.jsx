@@ -29,7 +29,7 @@ export default function AddOrEditCustomer() {
   const { data, loading, error, makeApiCall } = useApiCall();
 
   useEffect(() => {
-    if (!customer) {
+    if (!customer && !formData) {
       console.warn('no state was passsed')
       setFormData({
         customerName:  '',
@@ -45,11 +45,18 @@ export default function AddOrEditCustomer() {
           ticketPrice:  0,
           profit:  0,
           invoiceAmount:  0,
-          dueAmount: 0
+          dueAmount: 0,
+          amountPaid:0
         },
       });
     }
-  }, []);
+    else{
+      console.log('formData initialized')
+      console.log(formData)
+    }
+
+  }, [formatDate]);
+
 
 
 
@@ -174,6 +181,10 @@ setChecked(true)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+
+    // if(!customer) setFormData({[name]:value})
+
     const keys = name.split('.');
   // console.log(value)
     // Update formData

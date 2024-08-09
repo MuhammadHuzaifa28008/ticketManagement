@@ -1,4 +1,4 @@
-const {getAll, createNewCustomer, updateCustomerById, findCustomerById, addPaymentRecordById, deleteCustomerById, deletePaymentRecordById} = require('../db/dbFuncs')
+const {getAll, createNewCustomer, updateCustomerById,  deleteCustomerById, findCustomerById, addPaymentRecordById, deletePaymentRecordById} = require('../db/dbFuncs')
 
 
 const getAllCustomers = async (req, res) => {

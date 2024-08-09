@@ -39,10 +39,10 @@ if (data) {
     const { name, value } = e.target;
   
     // Check if the value is a valid number
-    const numericValue = parseFloat(value);
+    const numericValue = Math.round(parseFloat(value));
   
     if (name === 'amt') {
-      const dueAmount = customerData.paymentInfo.dueAmount;
+      const dueAmount = Math.round(customerData.paymentInfo.dueAmount);
   
       // Check if the value is a valid number and not an empty string
       if (isNaN(numericValue) || value.trim() === '' || !/^\d+(\.\d+)?$/.test(value)) {
@@ -68,7 +68,7 @@ if (data) {
       }
     }
   
-    setPaymentAmount(value);
+    setPaymentAmount(Math.round(value));
   };
   
 

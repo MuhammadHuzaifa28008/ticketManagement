@@ -21,6 +21,8 @@ function calculateInvoiceAmount(ticketPrice, profitPercentage) {
 // Function to calculate the due amount
 function calculateDueAmount(amountPaid, invoiceAmount) {
   // Convert the arguments to numbers
+
+ 
   const amountPaidNumber = Number(amountPaid);
   const invoiceAmountNumber = Number(invoiceAmount);
 
