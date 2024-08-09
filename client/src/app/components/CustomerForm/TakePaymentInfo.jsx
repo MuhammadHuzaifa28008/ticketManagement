@@ -60,8 +60,8 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
           onChange={handleInputChangeWithValidation}
           sx={{ mb: 2,
            }}
-           inputProps = {{ maxLength: 10}}
-          InputProps={{ inputProps: { min: 0 } }}
+           inputProps = {{ inputMode:'numeric', min:0, maxLength: 10}}
+          // InputProps={{ inputProps: { min: 0 } }}
           error={!!formErrors.ticketPrice}
           helperText={formErrors.ticketPrice}
         />

@@ -21,13 +21,14 @@ function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, error
           error={!!errors.customerName}
           helperText={errors.customerName}
           sx={{ mb: 2 }}
-          inputProps={{ maxLength: 20 }} 
+          inputProps={{ maxLength: 40 }}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
           label="Email"
           name="email"
+          type ="email"
           fullWidth
           value={formData? formData.email : ''}
           onChange={handleInputChange}
@@ -47,7 +48,7 @@ function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, error
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber}
           sx={{ mb: 2 }}
-          inputProps={{ maxLength: 15 }} 
+          inputProps={{ maxLength: 20 }} 
         />
       </Grid>
       <Grid item xs={12} sm={6}>

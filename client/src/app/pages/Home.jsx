@@ -53,7 +53,7 @@ export default function Home() {
       <NavBar />
       <AllCustomers />
       <Tooltip title="Add New Customer" arrow>
-        <Link to = "add-or-edit-customer-data">
+        <Link to = "/add-customer">
         <Fab
           color="primary"
           aria-label="add"
