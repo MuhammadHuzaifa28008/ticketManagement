@@ -18,8 +18,11 @@ const createNewCustomer = async (customerData) => {
         customerData.paymentInfo.ticketPrice = Math.round(customerData.paymentInfo.ticketPrice);
         customerData.paymentInfo.profit = Math.round(customerData.paymentInfo.profit);
         customerData.paymentInfo.invoiceAmount = Math.round(customerData.paymentInfo.invoiceAmount);
-        customerData.paymentInfo.amountPaid = Math.round(customerData.paymentInfo.amountPaid);
-        customerData.paymentInfo.dueAmount = Math.round(customerData.paymentInfo.dueAmount);
+        // customerData.paymentInfo.amountPaid = Math.round(customerData.paymentInfo.amountPaid);
+        // customerData.paymentInfo.dueAmount = Math.round(customerData.paymentInfo.dueAmount);
+        
+        customerData.paymentInfo.amountPaid = 0;
+        customerData.paymentInfo.dueAmount = Math.round(customerData.paymentInfo.invoiceAmount);
 
         // customerData.paymentInfo.paymentRecords = customerData.paymentInfo.paymentRecords.map(record => ({
         //     ...record,
@@ -165,6 +168,8 @@ const deletePaymentRecordById = async (customerId, recordId) => {
 
         // Update dueAmount
         customer.paymentInfo.dueAmount += paymentRecordAmount;
+        // update amountPaid
+        customer.paymentInfo.amountPaid -= paymentRecordAmount;
 
         // Remove the payment record from the array
         customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
