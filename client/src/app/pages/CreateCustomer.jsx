@@ -47,7 +47,7 @@ console.log(data)
 
 useEffect(()=>{
 if(formData.profit!==0 && formData.ticketPrice!==0) {
-    console.log('we are entering payment values')
+    // console.log('we are entering payment values')
     let newInvoiceAmount = calculateInvoiceAmount(formData.ticketPrice, formData.profit )
     handleChange({target:{name: 'invoiceAmount', value: newInvoiceAmount}})
 
@@ -160,6 +160,8 @@ return (
             onChange={handleDateChange}
             // renderInput={(params) => <DateInput {...params} />}
             fullWidth
+            error = {!!errors.dob}
+            helperText={errors.dob}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -188,11 +190,13 @@ return (
         <Grid item xs={12} sm={6}>
           <DateInput
             fullWidth
-            required
-            label="Date of Issue"
+            required ={true}
+            title="Date of Issue"
             name= "dateOfIssue"
             value={formData.dateOfIssue}
-            onChange={(date) => handleDateChange('dateOfIssue', date)}
+            onChange={handleDateChange}
+            error ={!!errors.dateOfIssue}
+            helperText={errors.dateOfIssue}
             // renderInput={(params) => <TextField {...params} />}
           />
         </Grid>
@@ -205,8 +209,8 @@ return (
             value={formData.ticketPrice}
             onChange={handleChange}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength:10 }}
-            error = {!!errors.dateOfIssue}
-          helperText={errors.dateOfIssue}
+            error = {!!errors.ticketPrice}
+            helperText={errors.ticketPrice}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -218,6 +222,8 @@ return (
             value={formData.profit}
             onChange={handleChange}
             inputProps={{min:0, maxLength:3, inputMode: 'numeric', pattern: '[0-9]*' }}
+            error = {!!errors.profit}
+            helperText = {errors.profit}
           />
         </Grid>
 

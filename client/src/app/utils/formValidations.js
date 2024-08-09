@@ -47,12 +47,12 @@ export const validateCustomerInfo = (formData, setErrors ) => {
     if (!formData.customerName) newErrors.customerName = 'Customer Name is required';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
-    if (!formData.PNRNo) newErrors.PNRNo = 'PNR# is required';
-    if (!formData.dateOfTraveling) newErrors.dateOfTraveling = 'Date of Traveling is required';
-    if (!formData.dateOfIssue) newErrors.dateOfIssue = 'Date of Issue is required';
-    if (!formData.ticketPrice) newErrors.ticketPrice = 'Ticket Price is required';
-    if (!formData.profit) newErrors.profit = 'Profit is required';
-    if (!formData.invoiceAmount) newErrors.invoiceAmount = 'Invoice Amount is required';
+    if (!formData.ticketInfo.PNRNo) newErrors.PNRNo = 'PNR# is required';
+    if (!formData.ticketInfo.dateOfTraveling) newErrors.dateOfTraveling = 'Date of Traveling is required';
+    if (!formData.ticketInfo.dateOfIssue) newErrors.dateOfIssue = 'Date of Issue is required';
+    if (!formData.paymentInfo.ticketPrice) newErrors.ticketPrice = 'Ticket Price is required';
+    if (!formData.paymentInfo.profit) newErrors.profit = 'Profit is required';
+    if (!formData.paymentInfo.invoiceAmount) newErrors.invoiceAmount = 'Invoice Amount is required';
     // if (!formData.amountPaid) newErrors.amountPaid = 'Amount Paid is required';
   
     // Validate Date of Birth
@@ -72,18 +72,18 @@ export const validateCustomerInfo = (formData, setErrors ) => {
       if (parsedDate > maxTravelDate) {
         newErrors[fieldName] = 'Date cannot be more than 1 year in the future.';
       } else if (parsedDate < minTravelDate) {
-        newErrors[fieldName] = 'Date cannot be more than 1 year in the past.';
+        newErrors[fieldName] = 'Date cannot be less than 1 year in the past.';
       }
     };
   
-    if (formData.dateOfTraveling) {
-      validateDate(formData.dateOfTraveling, 'dateOfTraveling');
-      validateDayAndMonth(formData.dateOfTraveling, 'dateOfTraveling');
+    if (formData.ticketInfo.dateOfTraveling) {
+      validateDate(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
+      validateDayAndMonth(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
     }
   
-    if (formData.dateOfIssue) {
-      validateDate(formData.dateOfIssue, 'dateOfIssue');
-      validateDayAndMonth(formData.dateOfIssue, 'dateOfIssue');
+    if (formData.ticketInfo.dateOfIssue) {
+      validateDate(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
+      validateDayAndMonth(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
     }
   
     setErrors(newErrors);
