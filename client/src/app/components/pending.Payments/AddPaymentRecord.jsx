@@ -14,7 +14,9 @@ function AddPaymentRecord({ customerData, setCustomer, paymentMethods, refreshCu
   const [errors, setErrors] = useState({ amt: '', method: '' });
   const { makeApiCall, data, error, loading } = useApiCall();
   const [openBD, setOpenBD] =  useState(false)
-
+useEffect(()=>{
+refreshCustomer(false)
+},[])
 
 useEffect(()=>{
 if(loading) setOpenBD(true)

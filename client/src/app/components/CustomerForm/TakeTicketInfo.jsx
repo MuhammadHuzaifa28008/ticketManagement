@@ -29,7 +29,7 @@ function TakeTicketInfo({ formData, handleInputChange, handleDateChange, errors 
         <DateInput
           title="Date of Traveling"
           name= "ticketInfo.dateOfTraveling"
-          value={formData? formData.ticketInfo?.dateOfTraveling :  'mm/dd/yyyy'}
+          value={formData? formData.ticketInfo?.dateOfTraveling :  ''}
           required={true}
           onChange={handleDateChange}
           error = {!! errors.dateOfTraveling}

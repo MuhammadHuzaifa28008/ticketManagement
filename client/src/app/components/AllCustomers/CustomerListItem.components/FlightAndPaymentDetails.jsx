@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import PaymentIcon from '@mui/icons-material/Payment';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -6,6 +6,8 @@ import FlightIcon from '@mui/icons-material/Flight';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useTheme } from '@mui/material/styles';
 import { formatDateReadable } from '../../../utils/formatDate';
+import {returnNumber} from '../../../utils/paymentCalculations'
+
 
 const FlightAndPaymentDetails = ({ customer }) => {
   const theme = useTheme();
@@ -16,6 +18,7 @@ const FlightAndPaymentDetails = ({ customer }) => {
   const paymentColor = paymentStatus === 'due' ? theme.palette.error.main : theme.palette.success.main;
   const PaymentStatusIcon = paymentStatus === 'due' ? PaymentIcon : PaidIcon;
 
+  
   return (
     <Box
       sx={{
@@ -69,7 +72,7 @@ const FlightAndPaymentDetails = ({ customer }) => {
         >
           <PaymentStatusIcon sx={{ verticalAlign: 'middle', mr: theme.spacing(1), color: paymentColor }} />
           <span style={{ color: paymentColor }}>
-            {paymentStatus === 'due' ? (<>{customer.paymentInfo.dueAmount.toFixed(2)} RS</>):(<>{customer.paymentInfo.invoiceAmount.toFixed(2)} RS</>)}
+            {paymentStatus === 'due' ? (<>{returnNumber(customer.paymentInfo.dueAmount)} RS</>):(<>{customer.paymentInfo.invoiceAmount.toFixed(2)} RS</>)}
           </span>
         </Typography>
       </Box>

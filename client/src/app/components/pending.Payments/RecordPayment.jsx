@@ -55,9 +55,10 @@ useEffect(()=>{
 
     if(fetchCustomer){
       // console.log('fetch customer was set to true')
-      // fetchUserData()
+      fetchUserData()
       setFetch(true) 
       setChecked(false); // show loading
+      setFetchCustomer(false)
     }
   }, [fetchCustomer]);
 
