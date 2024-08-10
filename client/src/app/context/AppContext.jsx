@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 // import users from '../../assets/dummy.json';
 import useApiCall from "../hooks/useApiCall"
+import axios from 'axios'
 
 // Create a context
 const AppContext = createContext();
@@ -29,22 +30,22 @@ export function AppContextProvider({ children }) {
       
     };
 
-    const loadMemoryData = async ()=>{
+    const loadMemoryData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/utils/db-stats');
-        const result = await response.json();
+        const response = await axios.get('http://localhost:5000/utils/db-stats');
+        const result = response.data; // Axios automatically parses JSON responses
         setDBStats(result);
       } catch (error) {
         console.error('Error loading DB stats:', error);
         // Handle error (e.g., set some state or show a message)
       }
-    }
+    };
   if(fetch) {
     console.log('loading context data')
     loadApp()
     loadMemoryData()
+    setFetch(false)
   }
-  setFetch(false)
   }, [fetch, setFetch]);
   
   useEffect(() => {

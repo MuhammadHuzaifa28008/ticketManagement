@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, LinearProgress, useTheme } from '@mui/material';
+import { useAppContext } from '../context/AppContext';
+
 
 function MemoryStats({ storageSize, dataSize }) {
   const theme = useTheme();
+const {dbStats}=useAppContext()
 
+
+useEffect(()=>{
+console.log('dbStats updated')
+},[dbStats])
   // Convert KB to MB and fix to 2 decimal places
   const storageSizeMB = (storageSize / 1024).toFixed(2);
   const dataSizeMB = (dataSize / 1024).toFixed(2);

@@ -13,31 +13,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import FormDataTest from '../components/test/FormDataTest'
 import MemoryStats from '../components/MemoryStats';
+import { useAppContext } from '../context/AppContext';
 
 
 export default function Home() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
-  const customerState = {
-    customerName: 'placeholder',
-    email: 'placeholder',
-    phoneNumber: 'placeholder',
-    dob: "date",
-    ticketInfo: {
-      PNRNo: 'placeholder',
-      dateOfTraveling: 'placeholder',
-      dateOfIssue: 'date',
-    },
-    paymentInfo: {
-      ticketPrice: 0,
-      profit: 0,
-      invoiceAmount: 0,
-      amountPaid: 0,
-      dueAmount: 0,
-    }
+  // Example memory stats data
+  const memoryStatsData = {
+    storageSize: 45056, // in KB
+    dataSize: 18218,    // in KB
   };
 
   const handleClickOpen = () => {
@@ -51,27 +38,41 @@ export default function Home() {
   return (
     <Box display='flex' flexDirection='column' height='100vh'>
       <NavBar />
+      
+      {/* MemoryStats Component */}
+      <Box sx={{ padding: theme.spacing(2) }}>
+        <MemoryStats
+          storageSize={memoryStatsData.storageSize}
+          dataSize={memoryStatsData.dataSize}
+        />
+      </Box>
+
+      {/* AllCustomers Component */}
       <AllCustomers />
+      
+      {/* Floating Action Button with Tooltip */}
       <Tooltip title="Add New Customer" arrow>
-        <Link to = "/add-customer">
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={handleClickOpen}
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            [theme.breakpoints.down('sm')]: {
-              bottom: 8,
-              right: 8,
-            },
-          }}
-        >
-          <AddIcon />
-        </Fab>
-      </Link>
+        <Link to="/add-customer">
+          <Fab
+            color="primary"
+            aria-label="add"
+            onClick={handleClickOpen}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              [theme.breakpoints.down('sm')]: {
+                bottom: 8,
+                right: 8,
+              },
+            }}
+          >
+            <AddIcon />
+          </Fab>
+        </Link>
       </Tooltip>
+      
+      {/* Dialog for Feature Not Available */}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -91,8 +92,5 @@ export default function Home() {
         </DialogActions>
       </Dialog>
     </Box>
-  
-  // <FormDataTest />
-  
   );
 }

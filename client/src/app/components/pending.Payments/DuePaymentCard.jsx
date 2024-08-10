@@ -70,7 +70,7 @@ const DuePaymentCard = ({ customer }) => {
                 Invoice Amount
               </Typography>
               <Typography variant="h4" color="primary.main">
-                RS {customer.paymentInfo.invoiceAmount.toFixed(2)}
+                RS {Math.round(customer.paymentInfo.invoiceAmount)}
               </Typography>
             </Card>
           </Grid>
@@ -100,7 +100,7 @@ const DuePaymentCard = ({ customer }) => {
                 }}
               >
                 <Typography variant="body2" sx={{ color: theme.palette.common.white, fontWeight: 'bold' }}>
-                  RS {customer.paymentInfo.amountPaid.toFixed(2)}
+                  RS {Math.round(customer.paymentInfo.amountPaid)}
                 </Typography>
               </Box>
             </Box>
@@ -121,7 +121,7 @@ const DuePaymentCard = ({ customer }) => {
                   },
                 }}
               >
-                RS {customer.paymentInfo.dueAmount.toFixed(2)}
+                RS {Math.round(customer.paymentInfo.dueAmount)}
                 <Typography sx={{ marginLeft: 1 }}>Record Payment</Typography>
               </Button>
             </Link>
