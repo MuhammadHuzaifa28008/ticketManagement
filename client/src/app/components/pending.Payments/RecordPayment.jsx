@@ -146,7 +146,7 @@ const handleCancel = ()=>{
               </Button>
           </Grid>  
       {data.paymentInfo.paymentRecords.length > 0 && (
-        <Grid Container >
+        <Grid container >
           < Grid item>
           <PaymentRecords paymentRecords={customer.paymentInfo.paymentRecords} />
           </ Grid>

@@ -12,10 +12,10 @@ const CreateCustomer = () => {
     customerName: '',
     email: '',
     phoneNumber: '',
-    dob: null,
+    dob: '',
     PNRNo: '',
-    dateOfTraveling: null,
-    dateOfIssue: null,
+    dateOfTraveling: '',
+    dateOfIssue: '',
     ticketPrice: 0,
     profit: 0,
     invoiceAmount: 0
@@ -32,7 +32,8 @@ const CreateCustomer = () => {
       setSnackbarMessage('Customer added successfully!');
       navigate(-1);
     }
-  }, [data, navigate]);
+    if(error) console.log(error)
+  }, [data]);
 
   useEffect(() => {
     if (formData.profit !== 0 && formData.ticketPrice !== 0) {
@@ -48,6 +49,11 @@ const CreateCustomer = () => {
       [name]: value
     }));
   };
+
+// useEffect(()=>{
+
+//   console.log(errors)
+// },[errors])
 
   const handleDateChange = (name, value) => {
     setFormData(prev => ({
@@ -79,15 +85,18 @@ const CreateCustomer = () => {
 
     try {
       if (validateCustomerInfo(structuredData, setErrors)) {
+        console.log('everything valid')
+        console.log('structured data:', structuredData)
         await makeApiCall('http://localhost:5000/customer/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(structuredData)
+          data: JSON.stringify(structuredData)
         });
       } else {
         setSnackbarMessage('Please check all input data.');
       }
     } catch (err) {
+      console.log(err.message)
       setSnackbarMessage('Failed to add customer. Please try again.');
     }
   };
