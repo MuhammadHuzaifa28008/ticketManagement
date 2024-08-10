@@ -6,6 +6,10 @@ import useApiCall from '../hooks/useApiCall';
 import CustomSnackbar from '../components/common/FeedBack/SnackBar';
 import { validateCustomerInfo } from '../utils/formValidations';
 import { calculateInvoiceAmount } from '../utils/paymentCalculations';
+import { useAppContext } from '../context/AppContext';
+
+
+
 
 const CreateCustomer = () => {
   const [formData, setFormData] = useState({
@@ -25,11 +29,13 @@ const CreateCustomer = () => {
   const [errors, setErrors] = useState({});
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const navigate = useNavigate();
+  const {setFetch} = useAppContext()
 
   useEffect(() => {
     if (data) {
       console.log('Customer saved in DB:', data);
       setSnackbarMessage('Customer added successfully!');
+      setFetch(true)
       navigate(-1);
     }
     if(error) console.log(error)

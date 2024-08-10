@@ -14,7 +14,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import FormDataTest from '../components/test/FormDataTest'
-
+import MemoryStats from '../components/MemoryStats';
 
 
 export default function Home() {

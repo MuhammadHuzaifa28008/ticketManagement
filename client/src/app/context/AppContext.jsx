@@ -13,8 +13,10 @@ export function useAppContext() {
 // Context provider component
 export function AppContextProvider({ children }) {
   const [allCustomers, setAllCustomers] = useState([]);
+  const [dbStats, setDBStats] = useState({})
   const [fetch, setFetch] = useState(true);
   const {error, data, loading, makeApiCall} = useApiCall()
+  const [fatalError, setFatalError] = useState(false)
 
   useEffect(() => {
     const loadApp = async () => {
@@ -24,10 +26,23 @@ export function AppContextProvider({ children }) {
         // console.error('Error loading app data:', error);
         setServerConn(false);
       }
+      
     };
+
+    const loadMemoryData = async ()=>{
+      try {
+        const response = await fetch('http://localhost:5000/utils/db-stats');
+        const result = await response.json();
+        setDBStats(result);
+      } catch (error) {
+        console.error('Error loading DB stats:', error);
+        // Handle error (e.g., set some state or show a message)
+      }
+    }
   if(fetch) {
     console.log('loading context data')
     loadApp()
+    loadMemoryData()
   }
   setFetch(false)
   }, [fetch, setFetch]);
@@ -44,7 +59,7 @@ export function AppContextProvider({ children }) {
   
 
   return (
-    <AppContext.Provider value={{ error, contextLoading:loading , allCustomers, setFetch }}>
+    <AppContext.Provider value={{ error, contextLoading:loading , dbStats, allCustomers, setFetch }}>
       {children}
     </AppContext.Provider>
   );
