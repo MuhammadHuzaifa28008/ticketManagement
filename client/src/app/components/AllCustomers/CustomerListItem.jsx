@@ -89,7 +89,7 @@ useEffect(()=>{
         <CustomerActionButtons customer={customer} onDeleteClick={handleDeleteClick} />
       </ListItem>
 
-      <LoadingBackdrop open={openBackdrop} />
+      <LoadingBackdrop open={loading} />
 
       <ConfirmationDialog
         open={openDialog}

@@ -8,7 +8,7 @@ import CustomerSkeleton from './CustomerSkeleton';
 import NoResults from '../NoResults';
 
 function AllCustomers() {
-  const { allCustomers } = useAppContext();
+  const { allCustomers, fetch } = useAppContext();
   const [customers, setCustomers] = useState([]);
   const [query, setQuery] = useState('');
   const filteredCustomers = useDynamicFilter(allCustomers, 'customerName', 'ticketInfo.PNRNo', query);
@@ -16,7 +16,7 @@ function AllCustomers() {
   // Update filtered customers when query or allCustomers change
   useEffect(() => {
     setCustomers(query === '' ? allCustomers : filteredCustomers);
-  }, [query, filteredCustomers, allCustomers]);
+  }, [query, filteredCustomers, allCustomers, fetch]);
 
   return (
     <Box

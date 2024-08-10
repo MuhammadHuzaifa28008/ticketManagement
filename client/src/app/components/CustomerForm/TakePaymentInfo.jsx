@@ -89,7 +89,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
               Invoice Amount
             </Typography>
             <Typography variant="h4" color="primary.main">
-              RS {formData? formData.paymentInfo.invoiceAmount : invoiceAmount}
+              RS {formData? Math.round(formData.paymentInfo.invoiceAmount) : invoiceAmount}
             </Typography>
           </CardContent>
         </Card>

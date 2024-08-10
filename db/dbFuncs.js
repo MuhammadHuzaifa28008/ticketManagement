@@ -107,14 +107,14 @@ const updateCustomerById = async (id, updateData) => {
         // Update paymentInfo fields if they are provided
         if (updateData.paymentInfo) {
             Object.keys(updateData.paymentInfo).forEach(key => {
-                updatePaths[`paymentInfo.${key}`] = updateData.paymentInfo[key];
+                updatePaths[`paymentInfo.${key}`] = Math.round(updateData.paymentInfo[key]);
             });
         }
 
         // Update other fields in the customer schema if they are provided
         Object.keys(updateData).forEach(key => {
             if (key !== 'ticketInfo' && key !== 'paymentInfo') {
-                updatePaths[key] = updateData[key];
+                updatePaths[key] = Math.round(updateData[key]);
             }
         });
 
@@ -142,8 +142,8 @@ const addPaymentRecordById = async (customerId, paymentRecord) => {
         paymentRecord.amt = Math.round(paymentRecord.amt);
 
         // Update dueAmount and amountPaid, and push the payment record
-        customer.paymentInfo.dueAmount -= paymentRecord.amt;
-        customer.paymentInfo.amountPaid += paymentRecord.amt;
+        customer.paymentInfo.dueAmount -= Math.round(paymentRecord.amt);
+        customer.paymentInfo.amountPaid += Math.round(paymentRecord.amt);
         customer.paymentInfo.paymentRecords.push(paymentRecord);
 
         return await customer.save();
@@ -167,9 +167,9 @@ const deletePaymentRecordById = async (customerId, recordId) => {
         const paymentRecordAmount = customer.paymentInfo.paymentRecords[paymentRecordIndex].amt;
 
         // Update dueAmount
-        customer.paymentInfo.dueAmount += paymentRecordAmount;
+        customer.paymentInfo.dueAmount += Math.round(paymentRecordAmount);
         // update amountPaid
-        customer.paymentInfo.amountPaid -= paymentRecordAmount;
+        customer.paymentInfo.amountPaid -= Math.round(paymentRecordAmount);
 
         // Remove the payment record from the array
         customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);

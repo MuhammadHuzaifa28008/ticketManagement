@@ -28,34 +28,34 @@ export default function AddOrEditCustomer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data, loading, error, makeApiCall } = useApiCall();
 
-  useEffect(() => {
-    if (!customer && !formData) {
-      console.warn('no state was passsed')
-      setFormData({
-        customerName:  '',
-        email: '',
-        phoneNumber: '',
-        dob: '',
-        ticketInfo: {
-          PNRNo:  '',
-          dateOfTraveling:  '',
-          dateOfIssue:  '',
-        },
-        paymentInfo: {
-          ticketPrice:  0,
-          profit:  0,
-          invoiceAmount:  0,
-          dueAmount: 0,
-          amountPaid:0
-        },
-      });
-    }
-    else{
-      console.log('formData initialized')
-      console.log(formData)
-    }
+  // useEffect(() => {
+  //   if (!customer && !formData) {
+  //     console.warn('no state was passsed')
+  //     setFormData({
+  //       customerName:  '',
+  //       email: '',
+  //       phoneNumber: '',
+  //       dob: '',
+  //       ticketInfo: {
+  //         PNRNo:  '',
+  //         dateOfTraveling:  '',
+  //         dateOfIssue:  '',
+  //       },
+  //       paymentInfo: {
+  //         ticketPrice:  0,
+  //         profit:  0,
+  //         invoiceAmount:  0,
+  //         dueAmount: 0,
+  //         amountPaid:0
+  //       },
+  //     });
+  //   }
+  //   else{
+  //     console.log('formData initialized')
+  //     console.log(formData)
+  //   }
 
-  }, [formatDate]);
+  // }, [formatDate]);
 
 
 

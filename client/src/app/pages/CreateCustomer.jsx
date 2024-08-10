@@ -48,12 +48,48 @@ const CreateCustomer = () => {
     }
   }, [formData]);
 
+
+  const validateNumInput = (name, value) => {
+    let error = '';
+    if (isNaN(value) || value < 0) {
+      error = 'Value must be a positive number.';
+    }
+    setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
+    return !error;
+  };
+
+const handlePaymentInfoChange = (event)=>{
+  
+  const { name, value } = event.target;
+  const numericValue = Math.round(value);
+
+  // Validate input
+  if (validateNumInput(name, numericValue)) {
+    // Update form data only if validation passes
+    handleChange({ target: { name, value: numericValue } });
+  }
+}
+
+
+
+
+
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+
+    // Remove error if field is valid
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+        delete newErrors[name];
+      return newErrors;
+    });
   };
 
 // useEffect(()=>{
@@ -66,6 +102,14 @@ const CreateCustomer = () => {
       ...prev,
       [name]: value
     }));
+
+    // Remove error if field is valid
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+        delete newErrors[name];
+      return newErrors;
+    });
+
   };
 
   const handleSubmit = async (e) => {
@@ -82,9 +126,9 @@ const CreateCustomer = () => {
         dateOfIssue: formData.dateOfIssue,
       },
       paymentInfo: {
-        ticketPrice: parseFloat(formData.ticketPrice),
-        profit: parseFloat(formData.profit),
-        invoiceAmount: parseFloat(formData.invoiceAmount),
+        ticketPrice: Math.round(formData.ticketPrice),
+        profit: Math.round(formData.profit),
+        invoiceAmount: Math.round(formData.invoiceAmount),
         
       }
     };
@@ -102,7 +146,7 @@ const CreateCustomer = () => {
         setSnackbarMessage('Please check all input data.');
       }
     } catch (err) {
-      console.log(err.message)
+      
       setSnackbarMessage('Failed to add customer. Please try again.');
     }
   };
@@ -226,7 +270,7 @@ const CreateCustomer = () => {
                   label="Ticket Price"
                   name="ticketPrice"
                   value={formData.ticketPrice}
-                  onChange={handleChange}
+                  onChange={handlePaymentInfoChange}
                   inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
                   error={!!errors.ticketPrice}
                   helperText={errors.ticketPrice}
@@ -239,7 +283,7 @@ const CreateCustomer = () => {
                   label="Profit %"
                   name="profit"
                   value={formData.profit}
-                  onChange={handleChange}
+                  onChange={handlePaymentInfoChange}
                   inputProps={{ min: 0, maxLength: 3, inputMode: 'numeric', pattern: '[0-9]*' }}
                   error={!!errors.profit}
                   helperText={errors.profit}
