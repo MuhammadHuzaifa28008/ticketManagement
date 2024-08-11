@@ -16,11 +16,11 @@ const getCustomer = async (req, res)=>{
   try {
     const customerId = req.params.id;
     const customer = await findCustomerById(customerId);
-    res.status(200).json(customer);
     if (!customer) return res.status(404).json({ error: 'Customer not found.' });
+    return res.status(200).json(customer);
   } catch (err) {
     console.error(err)
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 }
 
@@ -39,7 +39,7 @@ const createCustomer = async (req, res) => {
   
   const updateCustomer = async (req, res) => {
     try {
-        // console.log('update customer called')
+        // console.log('update customer called', req.body )
       const customerId = req.params.id;
       if(!customerId) {
         console.warn('please provide id');
@@ -48,7 +48,7 @@ const createCustomer = async (req, res) => {
         // else console.log(customerId)
       const updateData = req.body;
       if(!updateData) {
-        console.error('data was not give with data'); 
+        console.error('customer data was not give with data'); 
         throw new error('please proivde data')
       }
       // else console.log(updateData)

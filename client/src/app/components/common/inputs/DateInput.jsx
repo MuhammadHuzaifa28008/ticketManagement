@@ -5,15 +5,15 @@ const DateInput = ({ title, name, value, required, onChange, error, helperText }
   const handleInputChange = (event) => {
     let date = event.target.value;
     // Remove all non-digit characters
-    date = date.replace(/\D/g, '');
+    // date = date.replace(/\D/g, '');
 
-    // Format the date with dashes (yyyy-mm-dd)
-    if (date.length > 4) {
-      date = date.slice(0, 4) + '-' + date.slice(4);
-    }
-    if (date.length > 7) {
-      date = date.slice(0, 7) + '-' + date.slice(7);
-    }
+    // // Format the date with dashes (yyyy-mm-dd)
+    // if (date.length > 4) {
+    //   date = date.slice(0, 4) + '-' + date.slice(4);
+    // }
+    // if (date.length > 7) {
+    //   date = date.slice(0, 7) + '-' + date.slice(7);
+    // }
 
     // Call the parent onChange function
     onChange(name, date);

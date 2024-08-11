@@ -11,7 +11,7 @@ const useApiCall = () => {
     setError(null);
 
     try {
-      const response = await axios(url, options);
+      const response = await axios(url, { timeout: 15000, ...options });
       setData(response.data);
     } catch (err) {
       if (err.response) {

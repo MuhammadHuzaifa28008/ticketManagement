@@ -33,7 +33,7 @@ const CreateCustomer = () => {
 
   useEffect(() => {
     if (data) {
-      console.log('Customer saved in DB:', data);
+      // console.log('Customer saved in DB:', data);
       setSnackbarMessage('Customer added successfully!');
       setFetch(true)
       navigate(-1);
@@ -69,11 +69,6 @@ const handlePaymentInfoChange = (event)=>{
     handleChange({ target: { name, value: numericValue } });
   }
 }
-
-
-
-
-
 
 
   const handleChange = (e) => {

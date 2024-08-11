@@ -169,17 +169,9 @@ setChecked(true)
             setSnackbarMessage('unexpected error occured | contact developer')  
             return
           }
-
+          // console.log('data before edit data: ', formData)
           await makeApiCall(`http://localhost:5000/customer/${formData._id}`, {
             method: 'put',
-            data: formData,
-          });
-        }
-        else{
-          //  create new customer
-          console.log("it is a create call")
-          await makeApiCall(`http://localhost:5000/customer/add`, {
-            method: 'post',
             data: formData,
           });
         }
@@ -237,7 +229,7 @@ setChecked(true)
         message={snackbarMessage}
         openSB={!!snackbarMessage}
         onCloseSB={() => setSnackbarMessage('')}
-        severity={data? "success":  Object.keys(errors).length>0 || error ? "warn": "error"}
+        severity={data ? "success":  Object.keys(errors).length>0 || error ? "warn": "error"}
       />
 
 
