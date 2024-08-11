@@ -11,7 +11,7 @@ const PendingPayments = () => {
   );
 useEffect(()=>{
   // if(fetch){
-    setFetch(true)
+    // setFetch(true)
   // }
   
 },[allCustomers])

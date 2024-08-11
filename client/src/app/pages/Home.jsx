@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,11 +15,7 @@ export default function Home() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
-  // Example memory stats data
-  const memoryStatsData = {
-    storageSize: 45056, // in KB
-    dataSize: 18218,    // in KB
-  };
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,10 +36,7 @@ export default function Home() {
       {/* Grid Layout for MemoryStats and AllCustomers */}
       <Grid container spacing={2} sx={{ padding: theme.spacing(2) }}>
         <Grid item xs={12} md={4}>
-          <MemoryStats
-            storageSize={memoryStatsData.storageSize}
-            dataSize={memoryStatsData.dataSize}
-          />
+          <MemoryStats />
         </Grid>
         <Grid item xs={12} md={8}>
           <AllCustomers />

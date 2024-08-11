@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Grid, Typography } from '@mui/material';
+import { TextField, Grid } from '@mui/material';
 
 const DateInput = ({ title, name, value, required, onChange, error, helperText }) => {
   const handleInputChange = (event) => {
@@ -22,7 +22,7 @@ const DateInput = ({ title, name, value, required, onChange, error, helperText }
   return (
     <Grid item xs={12} mb={2}>
       <TextField
-      label={title}
+        label={title}
         fullWidth
         required={required}
         type="date"
@@ -31,6 +31,9 @@ const DateInput = ({ title, name, value, required, onChange, error, helperText }
         onChange={handleInputChange}
         inputProps={{
           maxLength: 10, // Limit input length to "yyyy-mm-dd"
+        }}
+        InputLabelProps={{
+          shrink: true, // Always keep the label above the input
         }}
         error={!!error}
         helperText={helperText}

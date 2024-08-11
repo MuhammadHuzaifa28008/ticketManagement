@@ -22,6 +22,7 @@ const useApiCall = () => {
         // The request was made but no response was received
         console.error('No response received:', err.request);
         setError('No response received. Please check your network connection.');
+        window.alert('No response received. Please check your network connection.');
       } else {
         // Something happened in setting up the request that triggered an Error
         console.error('Error in setting up request:', err.message);

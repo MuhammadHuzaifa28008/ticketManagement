@@ -53,7 +53,7 @@ function AllCustomers() {
       {customers.length > 0 ? (
         <CustomerList customers={customers} />
       ) : query ? (
-        <NoResults />
+        <NoResults  query={!!query}/>
       ) : (
         <>
           <CustomerSkeleton />
