@@ -22,7 +22,7 @@ export function AppContextProvider({ children }) {
   useEffect(() => {
     const loadApp = async () => {
       try {
-        makeApiCall('http://localhost:5000/customer/all');
+        makeApiCall('/customer/all');
       } catch (error) {
         // console.error('Error loading app data:', error);
         setServerConn(false);
@@ -32,7 +32,7 @@ export function AppContextProvider({ children }) {
 
     const loadMemoryData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/utils/db-stats');
+        const response = await axios.get('/utils/db-stats');
         const result = response.data; // Axios automatically parses JSON responses
         setDBStats(result);
       } catch (error) {

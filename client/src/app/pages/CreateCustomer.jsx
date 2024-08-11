@@ -132,7 +132,7 @@ const handlePaymentInfoChange = (event)=>{
       if (validateCustomerInfo(structuredData, setErrors)) {
         console.log('everything valid')
         console.log('structured data:', structuredData)
-        await makeApiCall('http://localhost:5000/customer/add', {
+        await makeApiCall('/customer/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           data: JSON.stringify(structuredData)
