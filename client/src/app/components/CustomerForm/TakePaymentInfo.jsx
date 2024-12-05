@@ -1,19 +1,28 @@
 import { Grid, Typography, TextField, Card, CardContent } from '@mui/material';
-import { calculateInvoiceAmount } from '../../utils/paymentCalculations';
+import { calculateInvoiceAmount, calculateDueAmount } from '../../utils/paymentCalculations';
 import { useEffect, useState } from 'react';
 
 function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
   const [invoiceAmount, setInvoiceAmount] = useState(0);
+  const [newDueAmount, setNewDueAmount] = useState(0);
+  // const [newPaidAmount, setNewPaidAmount] = useState(0);
   const [errors, setErrors] = useState({ ticketPrice: '', profit: '' });
 
 
 
   useEffect(() => {
-    const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
-    setInvoiceAmount(newInvoiceAmount);
+    if(!formData) {
+      
+      return
+    }else{
+      const newInvoiceAmount = calculateInvoiceAmount(formData.paymentInfo.ticketPrice, formData.paymentInfo.profit);
+      setInvoiceAmount(newInvoiceAmount);
+      const newDueAmount = calculateDueAmount(formData.paymentInfo.amountPaid, newInvoiceAmount)
+      handleInputChange({ target: { name: 'paymentInfo.invoiceAmount', value: newInvoiceAmount } });
+      handleInputChange({target:{name:'paymentInfo.dueAmount', value: newDueAmount}})
+    }
     // Update the form data with the new invoice amount
-    handleInputChange({ target: { name: 'paymentInfo.invoiceAmount', value: newInvoiceAmount } });
-  }, [formData.paymentInfo.ticketPrice, formData.paymentInfo.profit]);
+  }, [formData]);
 
   const validateInput = (name, value) => {
     let error = '';
@@ -47,12 +56,12 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
           name="paymentInfo.ticketPrice"
           type="text"
           fullWidth
-          value={formData.paymentInfo.ticketPrice || ''}
+          value={formData ? formData.paymentInfo.ticketPrice : 0}
           onChange={handleInputChangeWithValidation}
           sx={{ mb: 2,
            }}
-           inputProps = {{ maxLength: 10}}
-          InputProps={{ inputProps: { min: 0 } }}
+           inputProps = {{ inputMode:'numeric', min:0, maxLength: 10}}
+          // InputProps={{ inputProps: { min: 0 } }}
           error={!!formErrors.ticketPrice}
           helperText={formErrors.ticketPrice}
         />
@@ -65,7 +74,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
           name="paymentInfo.profit"
           type="text"
           fullWidth
-          value={formData.paymentInfo.profit || ''}
+          value={formData? formData.paymentInfo.profit : 0}
           onChange={handleInputChangeWithValidation}
           // InputProps={{ inputProps: { min: 0 } }}
           inputProps={{maxLength:3, min:0}} 
@@ -80,7 +89,7 @@ function TakePaymentInfo({ formData, handleInputChange, formErrors }) {
               Invoice Amount
             </Typography>
             <Typography variant="h4" color="primary.main">
-              RS {formData.paymentInfo.invoiceAmount.toFixed(2)}
+              RS {formData? Math.round(formData.paymentInfo.invoiceAmount) : invoiceAmount}
             </Typography>
           </CardContent>
         </Card>

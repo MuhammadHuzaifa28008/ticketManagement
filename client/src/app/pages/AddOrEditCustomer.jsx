@@ -9,7 +9,7 @@ import useApiCall from '../hooks/useApiCall';
 import SnackBar from '../components/common/FeedBack/SnackBar';
 import LoadingCircular from '../components/common/FeedBack/LoadingCircular';
 import { formatDate } from '../utils/formatDate';
-
+import { validateCustomerInfo } from '../utils/formValidations';
 
 
 export default function AddOrEditCustomer() {
@@ -28,36 +28,42 @@ export default function AddOrEditCustomer() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data, loading, error, makeApiCall } = useApiCall();
 
-  useEffect(() => {
-    if (!customer) {
-      console.warn('no state was passsed')
-      setFormData({
-        customerName:  '',
-        email: '',
-        phoneNumber: '',
-        dob: null,
-        ticketInfo: {
-          PNRNo:  '',
-          dateOfTraveling:  '',
-          dateOfIssue:  '',
-        },
-        paymentInfo: {
-          ticketPrice:  0,
-          profit:  0,
-          invoiceAmount:  0,
-          amountPaid:  0,
-          dueAmount: 0,
-        },
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!customer && !formData) {
+  //     console.warn('no state was passsed')
+  //     setFormData({
+  //       customerName:  '',
+  //       email: '',
+  //       phoneNumber: '',
+  //       dob: '',
+  //       ticketInfo: {
+  //         PNRNo:  '',
+  //         dateOfTraveling:  '',
+  //         dateOfIssue:  '',
+  //       },
+  //       paymentInfo: {
+  //         ticketPrice:  0,
+  //         profit:  0,
+  //         invoiceAmount:  0,
+  //         dueAmount: 0,
+  //         amountPaid:0
+  //       },
+  //     });
+  //   }
+  //   else{
+  //     console.log('formData initialized')
+  //     console.log(formData)
+  //   }
+
+  // }, [formatDate]);
 
 
 
 
-useEffect(()=>{
-  if (Object.keys(errors).length >0 ) console.log(errors)
-},[errors])
+
+// useEffect(()=>{
+//   if (Object.keys(errors).length >0 ) console.log(errors)
+// },[errors])
 
 useEffect(()=>{
 setChecked(true)
@@ -67,7 +73,7 @@ setChecked(true)
     if(data) {
       // console.log("data:", data)
       setFetch(true)
-      setFormData(data)
+      setFormData({...data, dob: formatDate(data.dob), ticketInfo: {...data.ticketInfo, dateOfTraveling: formatDate(data.ticketInfo.dateOfTraveling), dateOfIssue:formatDate(data.ticketInfo.dateOfIssue)}})
       setSnackbarMessage('data saved successfully')
     }
     if(loading) setIsLoading(loading)
@@ -80,105 +86,19 @@ setChecked(true)
 
 
 
-  const validate = () => {
-    let newErrors = {};
-    const today = new Date();
-    const minYear = 1940;
-    const maxTravelDate = new Date(today);
-    maxTravelDate.setFullYear(today.getFullYear() + 1); // 1 year in the future
-    const minTravelDate = new Date(today);
-    minTravelDate.setFullYear(today.getFullYear() - 1); // 1 year in the past
-  
-    const validateDayAndMonth = (date, fieldName) => {
-
-      // Parse the date
-      const parsedDate = new Date(date);
-    
-      // Extract year, month, and day
-      const year = parsedDate.getFullYear();
-      const month = parsedDate.getMonth() + 1; // getMonth() returns 0-based month
-      const day = parsedDate.getDate();
-    
-      // Check if the date is valid
-      if (isNaN(parsedDate.getTime())) {
-        newErrors[fieldName] = 'Invalid date format. - yyyy-mm-dd';
-      }
-    
-      // Check if year is valid
-      if (year < 0) {
-        newErrors[fieldName] = 'Year must be a valid positive number.';
-  
-      }
-    
-      // Check if the month is valid
-      if (month < 1 || month > 12) {
-        newErrors[fieldName] = 'Month must be between 1 and 12.';
-     
-      }
-    
-      // Check if the day is valid for the given month and year
-      const daysInMonth = new Date(year, month, 0).getDate();
-      if (day < 1 || day > daysInMonth) {
-        newErrors[fieldName] = `Day must be between 1 and ${daysInMonth} for the month ${month} in the year ${year}.`;
-       
-      }
-    };
-    
-  
-    // Check required fields
-    if (!formData.customerName) newErrors.customerName = 'Customer Name is required';
-    if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
-    if (!formData.dob) newErrors.dob = 'Date of Birth is required';
-    if (!formData.ticketInfo.PNRNo) newErrors.PNRNo = 'PNR# is required';
-    if (!formData.ticketInfo.dateOfTraveling) newErrors.dateOfTraveling = 'Date of Traveling is required';
-    if (!formData.ticketInfo.dateOfIssue) newErrors.dateOfIssue = 'Date of Issue is required';
-    if (!formData.paymentInfo.ticketPrice) newErrors.ticketPrice = 'Ticket Price is required';
-    if (!formData.paymentInfo.profit) newErrors.profit = 'Profit is required';
-    if (!formData.paymentInfo.invoiceAmount) newErrors.invoiceAmount = 'Invoice Amount is required';
-    if (!formData.paymentInfo.amountPaid) newErrors.amountPaid = 'Amount Paid is required';
-  
-    // Validate Date of Birth
-    if (formData.dob) {
-      const dobYear = new Date(formData.dob).getFullYear();
-      if (dobYear > today.getFullYear()) { // dob cannot be in the future
-        newErrors.dob = 'Date of birth cannot be a future date.';
-      } else if (dobYear < minYear) {
-        newErrors.dob = `Year cannot be less than ${minYear}.`;
-      }
-      validateDayAndMonth(formData.dob, 'dob');
-    }
-  
-    // Validate Date of Traveling and Date of Issue
-    const validateDate = (date, fieldName) => {
-      const parsedDate = new Date(date);
-      if (parsedDate > maxTravelDate) {
-        newErrors[fieldName] = 'Date cannot be more than 1 year in the future.';
-      } else if (parsedDate < minTravelDate) {
-        newErrors[fieldName] = 'Date cannot be more than 1 year in the past.';
-      }
-    };
-  
-    if (formData.ticketInfo.dateOfTraveling) {
-      validateDate(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
-      validateDayAndMonth(formData.ticketInfo.dateOfTraveling, 'dateOfTraveling');
-    }
-  
-    if (formData.ticketInfo.dateOfIssue) {
-      validateDate(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
-      validateDayAndMonth(formData.ticketInfo.dateOfIssue, 'dateOfIssue');
-    }
-  
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
   
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
+
+    // if(!customer) setFormData({[name]:value})
+
     const keys = name.split('.');
-  
+  // console.log(value)
     // Update formData
     if (keys.length === 1) {
+      if(!formData) setFormData({[name]:value})
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,
@@ -238,22 +158,22 @@ setChecked(true)
   
 
   const handleSubmit = async () => {
-    if (validate()) {
+    if (validateCustomerInfo(formData, setErrors)) {
       setIsLoading(true);
       try {
         if(customer){
 
           // Update existing customer
-          if(!formData._id) {console.error('id is null in form data | update aborting'); 
+          if(!formData._id) {
+            console.error('id is null in form data | update aborting'); 
+            setSnackbarMessage('unexpected error occured | contact developer')  
             return
           }
-
-          await makeApiCall(`/customer/${formData._id}`, {
+          // console.log('data before edit data: ', formData)
+          await makeApiCall(`http://localhost:5000/customer/${formData._id}`, {
             method: 'put',
             data: formData,
           });
-          
-          
         }
       } catch (err) {
         console.error('Error saving customer:', err);
@@ -263,7 +183,7 @@ setChecked(true)
         setIsLoading(false);
       }
     }
-    setSnackbarMessage('could not save data plese try again')
+    setSnackbarMessage('please double check all inputs data')
   };
 
   const handleCancel = () => {
@@ -275,7 +195,7 @@ setChecked(true)
 
     <Paper sx={{ maxWidth: '100%', boxSizing: 'border-box', padding: theme.spacing(3) }}>
       <Typography variant="h1" gutterBottom>
-        {formData ? 'Edit Customer' : 'Add Customer'}
+        {customer ? 'Edit Customer' : 'Add Customer'}
       </Typography>
       <TakeCustomerInfo
         formData={customer? formData: null}
@@ -309,7 +229,7 @@ setChecked(true)
         message={snackbarMessage}
         openSB={!!snackbarMessage}
         onCloseSB={() => setSnackbarMessage('')}
-        severity={data? "success":  Object.keys(errors).length>0? "warn": "error"}
+        severity={data ? "success":  Object.keys(errors).length>0 || error ? "warn": "error"}
       />
 
 

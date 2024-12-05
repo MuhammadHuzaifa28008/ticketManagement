@@ -16,7 +16,7 @@ function TakeTicketInfo({ formData, handleInputChange, handleDateChange, errors 
           label="PNR No"
           name="ticketInfo.PNRNo"
           fullWidth
-          value={formData.ticketInfo.PNRNo}
+          value={formData? formData.ticketInfo?.PNRNo : ''}
           onChange={handleInputChange}
           sx={{ mb: 2 }}
           error = {!!errors.PNRNo}
@@ -29,7 +29,7 @@ function TakeTicketInfo({ formData, handleInputChange, handleDateChange, errors 
         <DateInput
           title="Date of Traveling"
           name= "ticketInfo.dateOfTraveling"
-          value={formData.ticketInfo?.dateOfTraveling}
+          value={formData? formData.ticketInfo?.dateOfTraveling :  ''}
           required={true}
           onChange={handleDateChange}
           error = {!! errors.dateOfTraveling}
@@ -40,7 +40,7 @@ function TakeTicketInfo({ formData, handleInputChange, handleDateChange, errors 
         <DateInput
           title="Date of Issue"
           name="ticketInfo.dateOfIssue"
-          value={formData.ticketInfo?.dateOfIssue}
+          value={formData? formData.ticketInfo?.dateOfIssue :''}
           required={true}
           onChange={handleDateChange}
           error = {!!errors.dateOfIssue}

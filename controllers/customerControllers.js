@@ -1,4 +1,4 @@
-const {getAll, createNewCustomer, updateCustomerById, findCustomerById, addPaymentRecordById, deleteCustomerById, deletePaymentRecordById} = require('../db/dbFuncs')
+const {getAll, createNewCustomer, updateCustomerById,  deleteCustomerById, findCustomerById, addPaymentRecordById, deletePaymentRecordById} = require('../db/dbFuncs')
 
 
 const getAllCustomers = async (req, res) => {
@@ -6,6 +6,7 @@ const getAllCustomers = async (req, res) => {
       const allCustomers = await getAll();
       res.status(201).json(allCustomers);
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };
@@ -15,10 +16,11 @@ const getCustomer = async (req, res)=>{
   try {
     const customerId = req.params.id;
     const customer = await findCustomerById(customerId);
-    res.status(200).json(customer);
     if (!customer) return res.status(404).json({ error: 'Customer not found.' });
+    return res.status(200).json(customer);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error(err)
+    return res.status(400).json({ error: err.message });
   }
 }
 
@@ -26,26 +28,27 @@ const getCustomer = async (req, res)=>{
 const createCustomer = async (req, res) => {
     try {
       const customerData = req.body;
-      console.log(customerData)
+      // console.log(customerData)
       const newCustomer = await createNewCustomer(customerData);
       res.status(201).json(newCustomer);
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };
   
   const updateCustomer = async (req, res) => {
     try {
-        // console.log('update customer called')
+        // console.log('update customer called', req.body )
       const customerId = req.params.id;
       if(!customerId) {
-        console.error('please provide id');
+        console.warn('please provide id');
          throw new error('please provide id')
         }
         // else console.log(customerId)
       const updateData = req.body;
       if(!updateData) {
-        console.error('please provide data'); 
+        console.error('customer data was not give with data'); 
         throw new error('please proivde data')
       }
       // else console.log(updateData)
@@ -55,6 +58,7 @@ const createCustomer = async (req, res) => {
       // console.log('updatedCustomer:', updatedCustomer)
       res.json(updatedCustomer);
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };
@@ -72,6 +76,7 @@ const createCustomer = async (req, res) => {
       await deleteCustomerById(customerId);
       res.status(204).send();
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };
@@ -83,6 +88,7 @@ const createCustomer = async (req, res) => {
       const updatedCustomer = await addPaymentRecordById(customerId, paymentRecord);
       res.status(200).json(updatedCustomer);
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };
@@ -94,6 +100,7 @@ const createCustomer = async (req, res) => {
       const updatedCustomer = await deletePaymentRecordById(customerId, recordId);
       res.json(updatedCustomer);
     } catch (err) {
+      console.error(err)
       res.status(400).json({ error: err.message });
     }
   };

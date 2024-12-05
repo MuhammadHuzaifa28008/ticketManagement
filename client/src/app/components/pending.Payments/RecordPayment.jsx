@@ -36,7 +36,7 @@ const navigate = useNavigate()
 
 useEffect(()=>{
   const fetchUserData = async () => {
-    await makeApiCall(`/customer/${id}`, {
+    await makeApiCall(`http://localhost:5000/customer/${id}`, {
       method: 'get'
     });
   };
@@ -48,16 +48,17 @@ useEffect(()=>{
 
   useEffect(() => {
     const fetchUserData = async () => {
-      await makeApiCall(`/customer/${id}`, {
+      await makeApiCall(`http://localhost:5000/customer/${id}`, {
         method: 'get'
       });
     };
 
     if(fetchCustomer){
       // console.log('fetch customer was set to true')
-      // fetchUserData()
+      fetchUserData()
       setFetch(true) 
       setChecked(false); // show loading
+      setFetchCustomer(false)
     }
   }, [fetchCustomer]);
 
@@ -145,7 +146,7 @@ const handleCancel = ()=>{
               </Button>
           </Grid>  
       {data.paymentInfo.paymentRecords.length > 0 && (
-        <Grid Container >
+        <Grid container >
           < Grid item>
           <PaymentRecords paymentRecords={customer.paymentInfo.paymentRecords} />
           </ Grid>

@@ -1,119 +1,140 @@
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const Customer = require('../db/models/Customer.model');
+const retry = require('../utils/retry.js'); // Import the retry utility
 
-// Helper function to get all customers
+// Helper function to get all customers with retry logic
 const getAll = async () => {
-    try {
-      const customers = await Customer.find({});
-      return customers;
-    } catch (err) {
-      throw new Error('Error fetching customers: ' + err.message);
-    }
-  };
-// Helper function to create a new customer
+    return retry(async () => {
+        return await Customer.find({});
+    }, 3, 1000);
+};
+
+// Helper function to create a new customer with retry logic
 const createNewCustomer = async (customerData) => {
-  const customer = new Customer(customerData);
-  return await customer.save();
+    return retry(async () => {
+        customerData.paymentInfo.ticketPrice = Math.round(customerData.paymentInfo.ticketPrice);
+        customerData.paymentInfo.profit = Math.round(customerData.paymentInfo.profit);
+        customerData.paymentInfo.invoiceAmount = Math.round(customerData.paymentInfo.invoiceAmount);
+        customerData.paymentInfo.amountPaid = 0;
+        customerData.paymentInfo.dueAmount = Math.round(customerData.paymentInfo.invoiceAmount);
+
+        const customer = new Customer(customerData);
+        return await customer.save();
+    }, 3, 1000);
 };
 
-// Helper function to find a customer by ID
-const findCustomerById = async (id) => {
-  return await Customer.findById(id);
-};
-
-// Helper function to update customer data by ID
-const updateCustomerById = async (id, updateData) => {
-    // Create an object to store the update paths
-    let updatePaths = {};
-  
-    // Update ticketInfo fields if they are provided
-    if (updateData.ticketInfo) {
-      Object.keys(updateData.ticketInfo).forEach(key => {
-        updatePaths[`ticketInfo.${key}`] = updateData.ticketInfo[key];
-      });
-    }
-  
-    // Update paymentInfo fields if they are provided
-    if (updateData.paymentInfo) {
-      Object.keys(updateData.paymentInfo).forEach(key => {
-        updatePaths[`paymentInfo.${key}`] = updateData.paymentInfo[key];
-      });
-    }
-  
-    // Update other fields in the customer schema if they are provided
-    Object.keys(updateData).forEach(key => {
-      if (key !== 'ticketInfo' && key !== 'paymentInfo') {
-        updatePaths[key] = updateData[key];
-      }
-    });
-  
-    // Perform the update with $set to ensure partial updates are handled properly
-    return await Customer.findByIdAndUpdate(
-      id,
-      { $set: updatePaths },
-      { new: true, runValidators: true }
-    );
-  };
-  
-
-// Helper function to delete a customer by ID
+// Helper function to delete a customer by ID with retry logic
 const deleteCustomerById = async (id) => {
-  return await Customer.findByIdAndDelete(id);
+    return retry(async () => {
+        const deletedCustomer = await Customer.findByIdAndDelete(id);
+        if (!deletedCustomer) {
+            throw new Error('Customer not found.');
+        }
+        return deletedCustomer;
+    }, 3, 1000);
 };
 
+// Helper function to find a customer by ID with retry logic
+const findCustomerById = async (id) => {
+    return retry(async () => {
+        return await Customer.findById(id);
+    }, 3, 1000);
+};
 
+// Helper function to update customer data by ID with retry logic
+const updateCustomerById = async (id, updateData) => {
+    return retry(async () => {
+        if (updateData.paymentInfo) {
+            ['ticketPrice', 'profit', 'invoiceAmount', 'amountPaid', 'dueAmount'].forEach(key => {
+                if (typeof updateData.paymentInfo[key] === 'number') {
+                    updateData.paymentInfo[key] = Math.round(updateData.paymentInfo[key]);
+                }
+            });
 
+            if (updateData.paymentInfo.paymentRecords) {
+                updateData.paymentInfo.paymentRecords = updateData.paymentInfo.paymentRecords.map(record => ({
+                    ...record,
+                    amt: typeof record.amt === 'number' ? Math.round(record.amt) : record.amt
+                }));
+            }
+        }
 
+        let updatePaths = {};
 
+        if (updateData.ticketInfo) {
+            Object.keys(updateData.ticketInfo).forEach(key => {
+                updatePaths[`ticketInfo.${key}`] = updateData.ticketInfo[key];
+            });
+        }
 
+        if (updateData.paymentInfo) {
+            Object.keys(updateData.paymentInfo).forEach(key => {
+                if (typeof updateData.paymentInfo[key] === 'number') {
+                    updatePaths[`paymentInfo.${key}`] = Math.round(updateData.paymentInfo[key]);
+                }
+            });
+        }
 
-// Helper function to add a payment record
+        Object.keys(updateData).forEach(key => {
+            if (key !== 'ticketInfo' && key !== 'paymentInfo') {
+                updatePaths[key] = updateData[key];
+            }
+        });
+
+        return await Customer.findByIdAndUpdate(
+            id,
+            { $set: updatePaths },
+            { new: true, runValidators: true }
+        );
+    }, 3, 1000);
+};
+
+// Helper function to add a payment record with retry logic
 const addPaymentRecordById = async (customerId, paymentRecord) => {
-  const customer = await Customer.findById(customerId);
-  if (!customer) throw new Error('Customer not found.');
+    return retry(async () => {
+        const customer = await Customer.findById(customerId);
+        if (!customer) throw new Error('Customer not found.');
 
-  // Add current timestamp in UTC+5:00 to paymentRecord.time
-  paymentRecord.date = moment().tz('Asia/Karachi').format('YYYY-MM-DDTHH:mm:ssZ'); // Asia/Karachi is UTC+5:00
+        paymentRecord.date = moment().tz('Asia/Karachi').format('YYYY-MM-DDTHH:mm:ssZ'); // Asia/Karachi is UTC+5:00
+        paymentRecord.amt = Math.round(paymentRecord.amt);
 
-  // Update dueAmount
-  customer.paymentInfo.dueAmount -= paymentRecord.amt;
-  customer.paymentInfo.paymentRecords.push(paymentRecord);
+        customer.paymentInfo.dueAmount -= Math.round(paymentRecord.amt);
+        customer.paymentInfo.amountPaid += Math.round(paymentRecord.amt);
+        customer.paymentInfo.paymentRecords.push(paymentRecord);
 
-  return await customer.save();
+        return await customer.save();
+    }, 3, 1000);
 };
 
-
-
-// Helper function to delete a payment record by customer ID and record ID
+// Helper function to delete a payment record by customer ID and record ID with retry logic
 const deletePaymentRecordById = async (customerId, recordId) => {
-    try {
-      // Find the customer by ID
-      const customer = await Customer.findById(customerId);
-      if (!customer) throw new Error('Customer not found.');
-  
-      // Find the payment record index
-      const paymentRecordIndex = customer.paymentInfo.paymentRecords.findIndex(
-        (record) => record._id.toString() === recordId
-      );
-      if (paymentRecordIndex === -1) throw new Error('Payment record not found.');
-  
-      // Get the payment record amount
-      const paymentRecordAmount = customer.paymentInfo.paymentRecords[paymentRecordIndex].amt;
-  
-      // Update dueAmount
-      customer.paymentInfo.dueAmount += paymentRecordAmount;
-  
-      // Remove the payment record from the array
-      customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
-  
-      // Save the updated customer document
-      return await customer.save();
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-  
+    return retry(async () => {
+        const customer = await Customer.findById(customerId);
+        if (!customer) throw new Error('Customer not found.');
 
+        const paymentRecordIndex = customer.paymentInfo.paymentRecords.findIndex(
+            (record) => record._id.toString() === recordId
+        );
+        if (paymentRecordIndex === -1) throw new Error('Payment record not found.');
 
-module.exports ={getAll, createNewCustomer, findCustomerById, updateCustomerById, addPaymentRecordById, deletePaymentRecordById, deleteCustomerById}
+        const paymentRecordAmount = customer.paymentInfo.paymentRecords[paymentRecordIndex].amt;
+
+        customer.paymentInfo.dueAmount += Math.round(paymentRecordAmount);
+        customer.paymentInfo.amountPaid -= Math.round(paymentRecordAmount);
+
+        customer.paymentInfo.paymentRecords.splice(paymentRecordIndex, 1);
+
+        return await customer.save();
+    }, 3, 1000);
+};
+
+module.exports = {
+    getAll,
+    createNewCustomer,
+    findCustomerById,
+    updateCustomerById,
+    addPaymentRecordById,
+    deletePaymentRecordById,
+    deleteCustomerById
+};

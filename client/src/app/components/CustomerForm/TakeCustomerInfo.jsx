@@ -1,25 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Typography, TextField } from '@mui/material';
 import DateInput from '../common/inputs/DateInput';
-import {formatDate} from '../../utils/formatDate';
-
-
-
-
 
 function TakeCustomerInfo({ formData, handleInputChange, handleDateChange, errors }) {
-const [customerName, setCustomerName]  = useState(formData? formData.customerName : '')
-const [email, setEmail]  = useState(formData? formData.email : '')
-const [dob, setDOB]  = useState(formData? formData.dob : '')
-useEffect(()=>{
-console.log(formData)
-},[formData])
 
 
   return (
     <Grid container spacing={2} mt={2}>
       <Grid item xs={12} sm={6} md={6}>
-        <Typography variant={'h4'}>Customer Information</Typography>
+        <Typography variant="h4">Customer Information</Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
@@ -27,25 +16,24 @@ console.log(formData)
           label="Customer Name"
           name="customerName"
           fullWidth
-          value={customerName}
+          value={formData? formData.customerName : ''}
           onChange={handleInputChange}
           error={!!errors.customerName}
           helperText={errors.customerName}
-          sx={{ mb: 2,
-           }}
-           inputProps={{maxLength:20}} 
+          sx={{ mb: 2 }}
+          inputProps={{ maxLength: 40 }}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
           label="Email"
           name="email"
+          type ="email"
           fullWidth
-          value={formData.email}
+          value={formData? formData.email : ''}
           onChange={handleInputChange}
-          sx={{ mb: 2,
-           }}
-           inputProps={{maxLength:20}}
+          sx={{ mb: 2 }}
+          inputProps={{ maxLength: 20 }}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -53,18 +41,14 @@ console.log(formData)
           required
           label="Phone Number"
           name="phoneNumber"
-          type='tel'
+          type="tel"
           fullWidth
-          value={formData.phoneNumber}
+          value={formData? formData.phoneNumber :''}
           onChange={handleInputChange}
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber}
-          sx={{ mb: 2,
-
-          }}
-
-           inputProps={{maxLength:15}} 
-          
+          sx={{ mb: 2 }}
+          inputProps={{ maxLength: 20 }} 
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -72,7 +56,7 @@ console.log(formData)
           title="Date of Birth"
           name="dob"
           type="date"
-          value={formData.dob}
+          value={formData? formData.dob : ''}
           required={true}
           onChange={handleDateChange}
           error={errors.dob}

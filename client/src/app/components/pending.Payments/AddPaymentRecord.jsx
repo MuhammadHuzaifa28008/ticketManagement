@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography, TextField, Button, MenuItem, CircularProgress } from '@mui/material';
 import useApiCall from '../../hooks/useApiCall';
 import CustomSnackbar from '../common/FeedBack/SnackBar';
+import LoadingBackdrop from '../common/FeedBack/LoadingBackDrop';
 
 
 
@@ -12,13 +13,16 @@ function AddPaymentRecord({ customerData, setCustomer, paymentMethods, refreshCu
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [errors, setErrors] = useState({ amt: '', method: '' });
   const { makeApiCall, data, error, loading } = useApiCall();
-
-
+  const [openBD, setOpenBD] =  useState(false)
+useEffect(()=>{
+refreshCustomer(false)
+},[])
 
 useEffect(()=>{
-if(loading) // console.log('saving payment in loading')
-if (error) setSnackbarMessage('unable to save payment')
+if(loading) setOpenBD(true)
+if (error) setSnackbarMessage('unable to save payment'); setOpenBD(false)
 if (data) {
+  setOpenBD(false)
   setPaymentAmount('');
   setPaymentMethod('');
   setSnackbarMessage('data saved successfully')
@@ -35,10 +39,10 @@ if (data) {
     const { name, value } = e.target;
   
     // Check if the value is a valid number
-    const numericValue = parseFloat(value);
+    const numericValue = Math.round(parseFloat(value));
   
     if (name === 'amt') {
-      const dueAmount = customerData.paymentInfo.dueAmount;
+      const dueAmount = Math.round(customerData.paymentInfo.dueAmount);
   
       // Check if the value is a valid number and not an empty string
       if (isNaN(numericValue) || value.trim() === '' || !/^\d+(\.\d+)?$/.test(value)) {
@@ -64,7 +68,7 @@ if (data) {
       }
     }
   
-    setPaymentAmount(value);
+    setPaymentAmount(Math.round(value));
   };
   
 
@@ -85,13 +89,14 @@ if (data) {
 
   const handleSubmitPayment = async () => {
     // console.log('submit fn called')
-    if(loading) // console.log('loading prev req....')
+    if(loading) {console.log('loading prev req....');  return}
     if (paymentAmount && paymentMethod && !errors.amt && !errors.method) {
-      await makeApiCall(`/customer/${customerData._id}/paymentrecords`, {
+      await makeApiCall(`http://localhost:5000/customer/${customerData._id}/paymentrecords`, {
         method: 'post',
         data: { amt: paymentAmount, method: paymentMethod },
       });
     } else {
+      // console.log('we are in else block')
       if (!paymentAmount) {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -161,7 +166,7 @@ if (data) {
           </Grid>
         </Grid>
       </Grid>
-
+          <LoadingBackdrop open={openBD} />
       <CustomSnackbar
       openSB={!!snackbarMessage}
       message={snackbarMessage}
